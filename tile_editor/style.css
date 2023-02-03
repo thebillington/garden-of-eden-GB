@@ -1,0 +1,47 @@
+#tiledata {
+    position: absolute;
+    width: 30%;
+    left: 5%;
+    height: 90%;
+    top: 5%;
+}
+
+canvas {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+#tilemap {
+    position: absolute;
+    width: 55%;
+    left: 40%;
+    height: 90%;
+    top: 5%;
+}
+
+#tileeditor {
+    position: absolute;
+    width: 50%;
+    height: 50%;
+    top: 25%;
+    left: 25%;
+    border: 2px solid black;
+    background-color: white;
+    visibility: hidden;
+}
+
+#editorcanvas {
+    position: absolute;
+    width: 80%;
+    height: 80%;
+    top: 10%;
+    left: 10%;
+}
+
+#canvasbuttons {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    padding: 5px;
+}
