@@ -177,11 +177,13 @@ Start:
 
 ; ------- Draw pipes on screen----------
     ld hl, _GAME_WINDOW_START
-
-REPT $B
-    RandMax $B
+REPT _GAME_WINDOW_HEIGHT
+REPT _GAME_WINDOW_WIDTH
+    RandMax _PIPE_TILE_VARIATIONS
     add a, _PIPE_TILE_OFFSET
     ld [hli], a
+ENDR
+    AddSixteenBitHL _GAME_WINDOW_OFFSET
 ENDR
 
     SwitchScreenOn LCDCF_ON | LCDCF_BG8000 | LCDCF_BGON   ; utils_hardware -> SwitchScreenOn Macro
