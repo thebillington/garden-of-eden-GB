@@ -7,6 +7,11 @@ DEF _BLOCK1      EQU $8800 ; $8800->$8FFF
 DEF _BLOCK2      EQU $9000 ; $9000->$97FF
 
 DEF _TILE_LEN EQU $10
+DEF _PIPE_TILE_OFFSET EQU $CC
+
+DEF _GAME_WINDOW_START EQU $9884
+DEF _GAME_WINDOW_WIDTH EQU $B
+
 
 ; Sprite VRAM map location
 _SPRITE_VRAM EQU _BLOCK2
@@ -19,10 +24,13 @@ _SPRITE_VRAM EQU _BLOCK2
 
 ; -------- GBT ------\ ; Next 128(67) bytes used by gbt_player
 
-; Store previous button state
+; Store previous button state [1 bytes]
 PREV_BTN_STATE EQU _RAM + $A0 + $80
 
-; Store interrupt state
+; Store interrupt state [1 bytes]
 INTR_STATE EQU PREV_BTN_STATE + $01
+
+; Random Number Generator (RNG) Seed [3 bytes]
+SEED EQU INTR_STATE + $01
 
 ENDC

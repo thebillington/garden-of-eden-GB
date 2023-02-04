@@ -9,4 +9,6 @@ INCLUDE "utils_load.asm"
 
 INCLUDE "utils_math.asm"
 
+INCLUDE "utils_random.asm"
+
 INCLUDE "utils_sprite.asm"
