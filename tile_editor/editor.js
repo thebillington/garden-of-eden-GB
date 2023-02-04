@@ -1,5 +1,5 @@
-let HORIZONTALDATATILES = 12;
-let VERTICALDATATILES = 30;
+let HORIZONTALDATATILES = 16;
+let VERTICALDATATILES = 16;
 
 let tiledataArray = [];
 for (var i = 0; i < HORIZONTALDATATILES; i++) {
@@ -32,6 +32,7 @@ var tiledata = function(sketch) {
     let TILEDATAPIXELHEIGHT;
 
     sketch.setup = function() {
+        sketch.frameRate(5);
         let parent = document.getElementById("tiledata");
         TILEDATACANVASWIDTH = parent.offsetWidth;
         TILEDATACANVASHEIGHT = parent.offsetHeight;
@@ -58,7 +59,11 @@ var tiledata = function(sketch) {
                 sketch.rect(TILEX - 1, TILEY - 1, TILEDATAWIDTH, TILEDATAHEIGHT);
                 for (var pixelY = 0; pixelY < tiledataArray[x][y].length; pixelY++) {
                     for (var pixelX = 0; pixelX < tiledataArray[x][y][pixelY].length; pixelX++) {
-                        sketch.fill(colours[tiledataArray[x][y][pixelY][pixelX]]);
+                        try {
+                            sketch.fill(colours[tiledataArray[x][y][pixelY][pixelX]]);
+                        } catch {
+                            
+                        }
                         sketch.strokeWeight(1);
                         sketch.rect(TILEX + (pixelX * TILEDATAPIXELWIDTH), TILEY + (pixelY * TILEDATAPIXELHEIGHT), TILEDATAPIXELWIDTH, TILEDATAPIXELHEIGHT);
                     }
@@ -98,6 +103,7 @@ var tilemap = function(sketch) {
     let PIXELHEIGHT;
 
     sketch.setup = function() {
+        sketch.frameRate(5);
         let parent = document.getElementById("tilemap");
         let WIDTH = parent.offsetWidth;
         let HEIGHT = parent.offsetHeight;
@@ -111,8 +117,8 @@ var tilemap = function(sketch) {
     }
 
     sketch.draw = function() {
-        for (var y = 0; y < 20; y++) {
-            for (var x = 0; x < 18; x++) {
+        for (var y = 0; y < 18; y++) {
+            for (var x = 0; x < 20; x++) {
                 let selectedTilePosition = tilemapArray[y][x];
                 let selectedTileX = parseInt(selectedTilePosition % HORIZONTALDATATILES);
                 let selectedTileY = parseInt(selectedTilePosition / HORIZONTALDATATILES);
@@ -128,7 +134,11 @@ var tilemap = function(sketch) {
                 sketch.rect(TILEX - 1, TILEY - 1, TILEWIDTH, TILEHEIGHT);
                 for (var pixelY = 0; pixelY < selectedTile.length; pixelY++) {
                     for (var pixelX = 0; pixelX < selectedTile[pixelY].length; pixelX++) {
-                        sketch.fill(colours[selectedTile[pixelY][pixelX]]);
+                        try {
+                            sketch.fill(colours[selectedTile[pixelY][pixelX]]);
+                        } catch {
+
+                        }
                         sketch.strokeWeight(1);
                         sketch.rect(TILEX + (pixelX * PIXELWIDTH), TILEY + (pixelY * PIXELHEIGHT), PIXELWIDTH, PIXELHEIGHT);
                     }
@@ -160,6 +170,7 @@ var tileeditor = function(sketch) {
     let PIXELHEIGHT;
 
     sketch.setup = function() {
+        sketch.frameRate(5);
         let parent = document.getElementById("editorcanvas");
         let WIDTH = parent.offsetWidth;
         let HEIGHT = parent.offsetHeight;
