@@ -159,22 +159,6 @@ Start:
 ; ------- Load game screen into VRAM----------
     LoadImage gamewindow_tile_data, gamewindow_tile_data_end, gamewindow_map_data, gamewindow_map_data_end
 
-; ------- Load pipe tiles into VRAM ----------
-    CopyData _VRAM + $CC0 + _TILE_LEN * 0, pipecorner0_tile_data, pipecorner0_tile_data_end
-    CopyData _VRAM + $CC0 + _TILE_LEN * 1, pipecorner1_tile_data, pipecorner1_tile_data_end
-    CopyData _VRAM + $CC0 + _TILE_LEN * 2, pipecorner2_tile_data, pipecorner2_tile_data_end
-    CopyData _VRAM + $CC0 + _TILE_LEN * 3, pipecorner3_tile_data, pipecorner3_tile_data_end
-
-    CopyData _VRAM + $CC0 + _TILE_LEN * 4, pipecross0_tile_data, pipecross0_tile_data_end
-
-    CopyData _VRAM + $CC0 + _TILE_LEN * 5, pipestraight0_tile_data, pipestraight0_tile_data_end
-    CopyData _VRAM + $CC0 + _TILE_LEN * 6, pipestraight1_tile_data, pipestraight1_tile_data_end
-
-    CopyData _VRAM + $CC0 + _TILE_LEN * 7, pipet0_tile_data, pipet0_tile_data_end
-    CopyData _VRAM + $CC0 + _TILE_LEN * 8, pipet1_tile_data, pipet1_tile_data_end
-    CopyData _VRAM + $CC0 + _TILE_LEN * 9, pipet2_tile_data, pipet2_tile_data_end
-    CopyData _VRAM + $CC0 + _TILE_LEN * 10, pipet3_tile_data, pipet3_tile_data_end
-
 ; ------- Draw pipes on screen----------
     ld hl, _GAME_WINDOW_START
 REPT _GAME_WINDOW_HEIGHT
