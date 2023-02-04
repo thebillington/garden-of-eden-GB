@@ -66,3 +66,7 @@ canvas {
 #controls button {
     margin-bottom: 5px;
 }
+
+hr {
+    border-color: black;
+}

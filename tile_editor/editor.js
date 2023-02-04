@@ -80,8 +80,8 @@ var tiledata = function(sketch) {
 }
 
 let tilemapArray = [];
-for (var i = 0; i < 20; i++) {
-    tilemapArray.push([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);
+for (var i = 0; i < 32; i++) {
+    tilemapArray.push([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);
 }
 
 var tilemap = function(sketch) {
@@ -104,8 +104,8 @@ var tilemap = function(sketch) {
     }
 
     sketch.draw = function() {
-        for (var y = 0; y < tilemapArray.length; y++) {
-            for (var x = 0; x < tilemapArray[y].length; x++) {
+        for (var y = 0; y < 20; y++) {
+            for (var x = 0; x < 18; x++) {
                 let selectedTilePosition = tilemapArray[y][x];
                 let selectedTileX = parseInt(selectedTilePosition % HORIZONTALDATATILES);
                 let selectedTileY = parseInt(selectedTilePosition / HORIZONTALDATATILES);
@@ -223,6 +223,30 @@ function importTileData() {
 
 function saveTileMap() {
 
+}
+
+function importTileMap() {
+    selectFile(e => { 
+        let file = e.target.files[0];
+        document.getElementById("tilemap_filename").value = file.name;
+        readFile(file, e => {
+                let hexData = e.target.result.replaceAll("DB", "").replaceAll("$", "").replaceAll(" ", "").replaceAll("\n", ",").split(",");
+                for (var i = hexData.length; i < 32*32; i++) {
+                    hexData.push("00");
+                }
+                console.log(hexData.length);
+                let newTilemapArray = [];
+                for (var i = 0; i < parseInt(hexData.length/32); i++) {
+                    let pixelData =[];
+                    for (var j = 0; j < 32; j++) {
+                        pixelData.push(convertHexToDenary(hexData[i*32+j]));
+                    }
+                    newTilemapArray.push(pixelData);
+                }
+                tilemapArray = newTilemapArray;
+            }
+        );
+    });
 }
 
 function download(filename, text) {
