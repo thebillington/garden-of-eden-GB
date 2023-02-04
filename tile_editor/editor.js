@@ -18,7 +18,7 @@ let SELECTEDDATATILE;
 let SELECTEDDATATILEDATA;
 let SELECTEDMAPTILE;
 
-let colours = ["black", "darkgrey", "lightgrey", "white"];
+let colours = ["#0f380f", "#306230", "#8bac0f", "#9bbc0f"];
 
 var tiledata = function(sketch) {
 
@@ -177,3 +177,40 @@ function closeClick() {
     document.getElementById("tileeditor").style.visibility = "hidden";
     SELECTEDDATATILE = undefined;
 }
+
+function toggleColours() {
+    if (colours.includes("black")) {
+        colours = ["#0f380f", "#306230", "#8bac0f", "#9bbc0f"];
+        document.getElementById("body").style.backgroundColor = "#9bbc0f";
+    } else {
+        colours = ["black", "darkgrey", "lightgrey", "white"];
+        document.getElementById("body").style.backgroundColor = "lightgrey";
+    }
+}
+
+function saveTileData() {
+    let tileDataString = "";
+    for (var i = 0; i < tiledataArray.length; i++) {
+        for (var j = 0; j < tiledataArray[i].length; j++) {
+            tileDataString += `${convertTileToHex(tiledataArray[i][j])}\n`;
+        }
+    }
+    download("tilemap.asm", tileDataString);
+}
+
+function saveTileMap() {
+
+}
+
+function download(filename, text) {
+    var element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+    element.setAttribute('download', filename);
+  
+    element.style.display = 'none';
+    document.body.appendChild(element);
+  
+    element.click();
+  
+    document.body.removeChild(element);
+  }

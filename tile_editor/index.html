@@ -3,17 +3,27 @@
         <title>Billy Rebecchi - GB Map Editor</title>
         <link rel="stylesheet" href="style.css">
         <script src="https://cdn.jsdelivr.net/npm/p5@1.5.0/lib/p5.js"></script>
+        <script src="conversionUtils.js"></script>
         <script src="editor.js"></script>
     </head>
 
-    <body>
+    <body id="body">
         <div id="tiledata"></div>
         <div id="tilemap"></div>
+        <div id="controls">
+            <button onclick="toggleColours()">Toggle Colours</button>
+            <button onclick="saveTileData()">Save Tile Map</button>
+        </div>
         <div id="tileeditor">
             <div id="editorcanvas"></div>
             <div id="canvasbuttons">
                 <button onclick="closeClick()">Close</button>
             </div>
         </div>
+        <form onsubmit="download(this['name'].value, this['text'].value)">
+            <input type="text" name="name" value="test.txt">
+            <textarea name="text"></textarea>
+            <input type="submit" value="Download">
+        </form>
     </body>
 </html>

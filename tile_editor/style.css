@@ -1,7 +1,11 @@
+body {
+    background-color: #9bbc0f;
+}
+
 #tiledata {
     position: absolute;
     width: 30%;
-    left: 5%;
+    left: 2.5%;
     height: 90%;
     top: 5%;
 }
@@ -15,7 +19,7 @@ canvas {
 #tilemap {
     position: absolute;
     width: 55%;
-    left: 40%;
+    left: 35%;
     height: 90%;
     top: 5%;
 }
@@ -45,3 +49,25 @@ canvas {
     bottom: 0;
     padding: 5px;
 }
+
+#controls {
+    position: absolute;
+    width: 10%;
+    left: 87.5%;
+    height: 90%;
+    top: 5%;
+    border: 2px solid black;
+    text-align: center;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    overflow-y: auto;
+}
+
+#controls button {
+    margin-bottom: 5px;
+}
+
+form * {
+    display: block;
+    margin: 10px;
+  }
