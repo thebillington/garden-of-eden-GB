@@ -24,7 +24,7 @@ SECTION "LCDC", ROM0[$0048]
 ; Timer interrupt is triggered when the timer, rTIMA, ($FF05) overflows.
 ; rDIV, rTIMA, rTMA, rTAC all control the timer.
 SECTION "Timer", ROM0[$0050]
-    reti
+    jp TIHandler    ; Jump to timer handler routine
 
 ; Serial interrupt occurs after the gameboy transfers a byte through the
 ; gameboy link cable.
@@ -58,9 +58,20 @@ Start:
 
     DMA_COPY        ; Copy the DMA Routine to HRAM
 
+;  -------- Timer setup --------
+    xor a               ; (ld a, 0)
+    ld [rTIMA], a       ; Set TIMA to 0
+    or TACF_STOP        ; Set STOP bit in A
+    or TACF_4KHZ        ; Set divider bit in A
+    ld [rTAC], a        ; Load TAC with A (settings)
+    ld a, 0             ; Load A with 0
+    ld [rTMA], a        ; Load TMA with A
+    ld [rTIMA], a       ; Load TIMA with A (Reset to zero)
+
 ;  -------- Enable interrupts --------
     xor a           ; (ld a, 0)
     or IEF_VBLANK   ; Load VBlank mask into A
+    or IEF_TIMER    ; Load Timer mask into A
     ld [rIE], a     ; Set interrupt flags
     ei              ; Enable interrupts
 
@@ -80,6 +91,40 @@ Start:
     xor a               ; (ld a, 0)
     ld [rSCX], a        ; Load BG scroll Y with A
     ld [rSCY], a        ; Load BG scroll X with A
+
+; -------- Studio screen --------
+    LoadImageBanked studiologo_tile_data, studiologo_tile_data_end, studiologo_map_data, studiologo_map_data_end
+    
+    SwitchScreenOn LCDCF_ON | LCDCF_BG8000 | LCDCF_BGON   ; utils_hardware -> SwitchScreenOn Macro
+
+;  -------- Timer start --------
+    xor a           ; (ld a, 0)
+    ld b, a         ; Load A into B
+
+    or TACF_4KHZ    ; Set divider bit in A 
+    or TACF_START   ; Set START bit in A
+    ld [rDIV], a    ; Load DIV with A (Reset to zero)
+    ld [rTAC], a    ; Load TAC with A
+
+;  -------- Wait for ~1s before moving on --------
+.studio
+    ld a, $F
+    cp b
+    jr nz, .studio
+
+;  -------- Timer setup --------
+    xor a               ; (ld a, 0)
+    ld [rTIMA], a       ; Set TIMA to 0
+    or TACF_STOP        ; Set STOP bit in A
+    or TACF_4KHZ        ; Set divider bit in A
+    ld [rTAC], a        ; Load TAC with A (settings)
+    ld a, 0             ; Load A with 0
+    ld [rTMA], a        ; Load TMA with A
+    ld [rTIMA], a       ; Load TIMA with A (Reset to zero)
+
+; -------- Clear the screen ---------
+    SwitchScreenOff     ; utils_hardware -> SwitchScreenOff Macro
+    ClearVRAM           ; utils_clear -> ClearVRAM Macro
 
 ; -------- Splash screen --------
 
@@ -164,3 +209,8 @@ VBHandler:
     pop hl                  ; Restore HL register
 
     jp _HRAM                ; Jump to the start of DMA Routine
+
+; -------- Timer Interrupt Handler ---------
+TIHandler:
+    inc b           ; Incriment B register every tick
+    reti            ; Return and enable interrupts
