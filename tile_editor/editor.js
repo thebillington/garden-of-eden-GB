@@ -16,6 +16,7 @@ for (var i = 0; i < HORIZONTALDATATILES; i++) {
 
 let SELECTEDDATATILE;
 let SELECTEDDATATILEDATA;
+let SELECTEDMAPTILE;
 
 let colours = ["black", "darkgrey", "lightgrey", "white"];
 
@@ -46,13 +47,18 @@ var tiledata = function(sketch) {
             for (var y = 0; y < tiledataArray[x].length; y++) {
                 let TILEX = x * TILEDATAWIDTH;
                 let TILEY = y * TILEDATAHEIGHT;
+                if (SELECTEDDATATILE && x == SELECTEDDATATILE.x && y == SELECTEDDATATILE.y) {
+                    sketch.fill("purple");
+                    sketch.rect(TILEX - 1, TILEY - 1, TILEDATAWIDTH, TILEDATAHEIGHT);
+                    continue;
+                }
                 sketch.strokeWeight(2);
                 sketch.rect(TILEX - 1, TILEY - 1, TILEDATAWIDTH, TILEDATAHEIGHT);
                 for (var pixelY = 0; pixelY < tiledataArray[x][y].length; pixelY++) {
                     for (var pixelX = 0; pixelX < tiledataArray[x][y][pixelY].length; pixelX++) {
                         sketch.fill(colours[tiledataArray[x][y][pixelY][pixelX]]);
                         sketch.strokeWeight(1);
-                        sketch.rect(TILEX + (pixelX * TILEDATAPIXELWIDTH), TILEY + (pixelY * TILEDATAPIXELHEIGHT),TILEDATAPIXELWIDTH, TILEDATAPIXELHEIGHT);
+                        sketch.rect(TILEX + (pixelX * TILEDATAPIXELWIDTH), TILEY + (pixelY * TILEDATAPIXELHEIGHT), TILEDATAPIXELWIDTH, TILEDATAPIXELHEIGHT);
                     }
                 }
             }
@@ -62,23 +68,72 @@ var tiledata = function(sketch) {
     function mouseClick() {
         let xTilePos = parseInt(sketch.mouseX / TILEDATAWIDTH);
         let yTilePos = parseInt(sketch.mouseY / TILEDATAHEIGHT);
-        SELECTEDDATATILE = { x: xTilePos, y: yTilePos };
-        SELECTEDDATATILEDATA = [...tiledataArray[xTilePos][yTilePos]];
-        document.getElementById("tileeditor").style.visibility = "visible";
+        if (SELECTEDMAPTILE) {
+            tilemapArray[SELECTEDMAPTILE.x][SELECTEDMAPTILE.y] = xTilePos + (yTilePos * HORIZONTALDATATILES);
+            SELECTEDMAPTILE = undefined;
+        } else {
+            SELECTEDDATATILE = { x: xTilePos, y: yTilePos };
+            SELECTEDDATATILEDATA = [...tiledataArray[xTilePos][yTilePos]];
+            document.getElementById("tileeditor").style.visibility = "visible";
+        }
     }
 }
 
+let tilemapArray = [];
+for (var i = 0; i < 20; i++) {
+    tilemapArray.push([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);
+}
+
 var tilemap = function(sketch) {
+    let TILEWIDTH;
+    let TILEHEIGHT;
+    let PIXELWIDTH;
+    let PIXELHEIGHT;
+
     sketch.setup = function() {
         let parent = document.getElementById("tilemap");
         let WIDTH = parent.offsetWidth;
         let HEIGHT = parent.offsetHeight;
+        TILEWIDTH = WIDTH / 20;
+        TILEHEIGHT = HEIGHT / 18;
+        PIXELWIDTH = TILEWIDTH / 8;
+        PIXELHEIGHT = TILEHEIGHT / 8;
         let tilemapCanvas = sketch.createCanvas(WIDTH, HEIGHT);
         tilemapCanvas.parent("tilemap");
+        tilemapCanvas.mousePressed(mouseClick);
     }
 
     sketch.draw = function() {
+        for (var y = 0; y < tilemapArray.length; y++) {
+            for (var x = 0; x < tilemapArray[y].length; x++) {
+                let selectedTilePosition = tilemapArray[y][x];
+                let selectedTileX = parseInt(selectedTilePosition % HORIZONTALDATATILES);
+                let selectedTileY = parseInt(selectedTilePosition / HORIZONTALDATATILES);
+                let selectedTile = tiledataArray[selectedTileX][selectedTileY];
+                let TILEX = x * TILEWIDTH;
+                let TILEY = y * TILEHEIGHT;
+                if (SELECTEDMAPTILE && x == SELECTEDMAPTILE.y && y == SELECTEDMAPTILE.x) {
+                    sketch.fill("purple");
+                    sketch.rect(TILEX - 1, TILEY - 1, TILEWIDTH, TILEHEIGHT);
+                    continue;
+                }
+                sketch.strokeWeight(2);
+                sketch.rect(TILEX - 1, TILEY - 1, TILEWIDTH, TILEHEIGHT);
+                for (var pixelY = 0; pixelY < selectedTile.length; pixelY++) {
+                    for (var pixelX = 0; pixelX < selectedTile[pixelY].length; pixelX++) {
+                        sketch.fill(colours[selectedTile[pixelY][pixelX]]);
+                        sketch.strokeWeight(1);
+                        sketch.rect(TILEX + (pixelX * PIXELWIDTH), TILEY + (pixelY * PIXELHEIGHT), PIXELWIDTH, PIXELHEIGHT);
+                    }
+                }
+            }
+        }
+    }
 
+    function mouseClick() {
+        let xTilePos = parseInt(sketch.mouseY / TILEHEIGHT);
+        let yTilePos = parseInt(sketch.mouseX / TILEWIDTH);
+        SELECTEDMAPTILE = { x: xTilePos, y: yTilePos };
     }
 }
 
@@ -120,4 +175,5 @@ new p5(tileeditor);
 
 function closeClick() {
     document.getElementById("tileeditor").style.visibility = "hidden";
+    SELECTEDDATATILE = undefined;
 }
