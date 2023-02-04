@@ -66,8 +66,3 @@ canvas {
 #controls button {
     margin-bottom: 5px;
 }
-
-form * {
-    display: block;
-    margin: 10px;
-  }

@@ -190,12 +190,35 @@ function toggleColours() {
 
 function saveTileData() {
     let tileDataString = "";
-    for (var i = 0; i < tiledataArray.length; i++) {
-        for (var j = 0; j < tiledataArray[i].length; j++) {
-            tileDataString += `${convertTileToHex(tiledataArray[i][j])}\n`;
+    for (var i = 0; i < VERTICALDATATILES; i++) {
+        for (var j = 0; j < HORIZONTALDATATILES; j++) {
+            tileDataString += `${i == 0 && j == 0 ? "" : "\n"}${convertTileToHex(tiledataArray[j][i])}`;
         }
     }
-    download("tilemap.asm", tileDataString);
+    download(document.getElementById("tiledata_filename").value, tileDataString);
+}
+
+function importTileData() {
+    selectFile(e => { 
+        let file = e.target.files[0];
+        document.getElementById("tiledata_filename").value = file.name;
+        readFile(file, e => {
+                let hexData = e.target.result.replaceAll("DB", "").replaceAll("$", "").replaceAll(" ", "").replace(/\n\s*$/, "").split("\n");
+                for (var i = hexData.length; i < 360; i++) {
+                    hexData.push("00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00");
+                }
+                let newTiledataArray = [];
+                for (var i = 0; i < HORIZONTALDATATILES; i++) {
+                    let verticalDataTile = [];
+                    for (var j = 0; j < VERTICALDATATILES; j++) {
+                        verticalDataTile.push(convertHexToTile(hexData[i+j*HORIZONTALDATATILES].split(",")));
+                    }
+                    newTiledataArray.push(verticalDataTile);
+                }
+                tiledataArray = newTiledataArray;
+            }
+        );
+    });
 }
 
 function saveTileMap() {
@@ -213,4 +236,18 @@ function download(filename, text) {
     element.click();
   
     document.body.removeChild(element);
-  }
+}
+
+function selectFile(callback) {
+    var input = document.createElement('input');
+    input.type = 'file';
+    input.onchange = callback;
+    input.click();
+}
+
+function readFile(file, callback) {
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = callback;
+    reader.readAsText(file);
+}
