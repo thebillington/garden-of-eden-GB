@@ -159,10 +159,6 @@ Start:
 ; ------- Load game screen into VRAM----------
     LoadImage gamewindow_tile_data, gamewindow_tile_data_end, gamewindow_map_data, gamewindow_map_data_end
 
-    SwitchScreenOn LCDCF_ON | LCDCF_BG8000 | LCDCF_BGON   ; utils_hardware -> SwitchScreenOn Macro
-
-    jp .debug      ; Use to lock CPU for debugging
-
 ; ------- Load pipe tiles into VRAM ----------
     CopyData _VRAM + $CC0 + _TILE_LEN * 0, pipecorner0_tile_data, pipecorner0_tile_data_end
     CopyData _VRAM + $CC0 + _TILE_LEN * 1, pipecorner1_tile_data, pipecorner1_tile_data_end
@@ -179,18 +175,13 @@ Start:
     CopyData _VRAM + $CC0 + _TILE_LEN * 9, pipet2_tile_data, pipet2_tile_data_end
     CopyData _VRAM + $CC0 + _TILE_LEN * 10, pipet3_tile_data, pipet3_tile_data_end
 
-    SwitchScreenOn LCDCF_ON | LCDCF_BG8000 | LCDCF_BGON   ; utils_hardware -> SwitchScreenOn Macro
-
 ; ------- Draw pipes on screen----------
     ld hl, _GAME_WINDOW_START
 
-    ;RandMax $B
-    ld a, 0
-    add a, _PIPE_TILE_OFFSET
-
 REPT $B
+    RandMax $B
+    add a, _PIPE_TILE_OFFSET
     ld [hli], a
-    inc a
 ENDR
 
     SwitchScreenOn LCDCF_ON | LCDCF_BG8000 | LCDCF_BGON   ; utils_hardware -> SwitchScreenOn Macro
