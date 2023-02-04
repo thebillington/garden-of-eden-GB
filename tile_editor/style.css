@@ -35,19 +35,58 @@ canvas {
     visibility: hidden;
 }
 
-#editorcanvas {
+#editortools {
     position: absolute;
-    width: 80%;
+    width: 10%;
     height: 80%;
     top: 10%;
     left: 10%;
+    border: 2px solid black;
+}
+
+.colourSelect {
+    display: inline-block;
+    width: 100%;
+    height: 25%;
+}
+
+#white {
+    background-color: #9bbc0f;
+}
+
+#light {
+    background-color: #8bac0f;
+}
+
+#dark {
+    background-color: #306230;
+}
+
+#black {
+    background-color: #0f380f;
+}
+
+#editorcanvas {
+    position: absolute;
+    width: 60%;
+    height: 80%;
+    top: 10%;
+    left: 30%;
+}
+
+#tilehex {
+    position: absolute;
+    bottom: 5px;
+    left: 10%;
+    width: 80%;
+    text-align: center;
 }
 
 #canvasbuttons {
     position: absolute;
     right: 0;
-    bottom: 0;
-    padding: 5px;
+    top: 0;
+    padding: 10px;
 }
 
 #controls {
