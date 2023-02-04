@@ -79,6 +79,7 @@ var tiledata = function(sketch) {
             SELECTEDDATATILE = { x: xTilePos, y: yTilePos };
             SELECTEDDATATILEDATA = [...tiledataArray[xTilePos][yTilePos]];
             document.getElementById("tileeditor").style.visibility = "visible";
+            document.getElementById("tilehex").value = convertTileToHex(SELECTEDDATATILEDATA);
         }
     }
 }
@@ -183,6 +184,7 @@ var tileeditor = function(sketch) {
         let xPixelPos = parseInt(sketch.mouseX / PIXELWIDTH);
         let yPixelPos = parseInt(sketch.mouseY / PIXELHEIGHT);
         SELECTEDDATATILEDATA[yPixelPos][xPixelPos] = selectedDrawColour;
+        document.getElementById("tilehex").value = convertTileToHex(SELECTEDDATATILEDATA);
     }
 }
 

@@ -74,11 +74,19 @@ canvas {
     left: 30%;
 }
 
+#tilehex {
+    position: absolute;
+    bottom: 5px;
+    left: 10%;
+    width: 80%;
+    text-align: center;
+}
+
 #canvasbuttons {
     position: absolute;
     right: 0;
-    bottom: 0;
-    padding: 5px;
+    top: 0;
+    padding: 10px;
 }
 
 #controls {
