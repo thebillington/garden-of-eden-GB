@@ -188,7 +188,7 @@ function toggleColours() {
     }
 }
 
-function saveTileData() {
+function exportTileData() {
     let tileDataString = "";
     for (var i = 0; i < VERTICALDATATILES; i++) {
         for (var j = 0; j < HORIZONTALDATATILES; j++) {
@@ -221,8 +221,13 @@ function importTileData() {
     });
 }
 
-function saveTileMap() {
-
+function exportTileMap() {
+    let tileMapString = "";
+    for (var i = 0; i < 32; i++) {
+        tileMapString += `${i == 0 ? "" : "\n"}${convertRowToHex(tilemapArray[i].slice(0,16))}`;
+        tileMapString += `\n${convertRowToHex(tilemapArray[i].slice(16,32))}`;
+    }
+    download(document.getElementById("tilemap_filename").value, tileMapString);
 }
 
 function importTileMap() {
@@ -234,7 +239,6 @@ function importTileMap() {
                 for (var i = hexData.length; i < 32*32; i++) {
                     hexData.push("00");
                 }
-                console.log(hexData.length);
                 let newTilemapArray = [];
                 for (var i = 0; i < parseInt(hexData.length/32); i++) {
                     let pixelData =[];

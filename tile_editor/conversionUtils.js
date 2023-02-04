@@ -2,14 +2,15 @@ let binToHex = {"0000":"0", "0001":"1", "0010":"2", "0011":"3", "0100":"4", "010
 let hexToBin = {"0":"0000", "1":"0001", "2":"0010", "3":"0011", "4":"0100", "5":"0101", "6":"0110", "7":"0111", "8":"1000", "9":"1001", "A":"1010", "B":"1011", "C":"1100", "D":"1101", "E":"1110", "F":"1111"};
 let binToDen = {"00":3, "01": 2, "10": 1, "11": 0}
 let hexToDen = {"0":0, "1":1, "2":2, "3":3, "4":4, "5":5, "6":6, "7":7, "8":8, "9":9, "A":10, "B":11, "C":12, "D":13, "E":14, "F":15}
+let denToHex = {0:"0", 1:"1", 2:"2", 3:"3", 4:"4", 5:"5", 6:"6", 7:"7", 8:"8", 9:"9", 10:"A", 11:"B", 12:"C", 13:"D", 14:"E", 15:"F"}
 
 function convertTileToHex(tile) {
     let binaryConversion = convertTileToBinary(tile);
-    let tileHex = "DB";
+    let tileHex = "DB ";
     for (var i = 0; i < binaryConversion.length; i++) {
         let leftNibble = binaryConversion[i].slice(0,4);
         let rightNibble = binaryConversion[i].slice(4,8);
-        tileHex += ` $${binToHex[leftNibble]}${binToHex[rightNibble]}${(i != binaryConversion.length - 1) ? ',' : ';'}`;
+        tileHex += `$${binToHex[leftNibble]}${binToHex[rightNibble]}${(i != binaryConversion.length - 1) ? ',' : ''}`;
     }
     return tileHex;
 }
@@ -53,6 +54,14 @@ function convertTileToBinary(tile) {
         tileBytes.push(bottomByte);
     }
     return tileBytes;
+}
+
+function convertRowToHex(row) {
+    let rowHex = "DB ";
+    for (var i = 0; i < row.length; i++) {
+        rowHex += `$${denToHex[parseInt(row[i]/16)]}${denToHex[parseInt(row[i]%16)]}${(i != row.length - 1) ? ',' : ''}`;
+    }
+    return rowHex;
 }
 
 function convertHexToDenary(hex) {
