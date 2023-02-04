@@ -1,1 +1,7 @@
 .DS_Store
+
+# Gameboy specific asm files
+*.gb
+*.map
+*.sym
+*.o
