@@ -49,6 +49,16 @@ MACRO MOD
 
 ENDM
 
+; Modulus method
+MACRO MODA
+.modLoop\@
+    sub \1
+
+    jr nc, .modLoop\@
+    add \1
+
+ENDM
+
 ; Divide method
 MACRO DIVIDE
 
@@ -64,8 +74,22 @@ MACRO DIVIDE
 
 ENDM
 
+; Divide method
+MACRO DIVIDEA
+
+    ld b, $00
+
+.divLoop\@
+    sub \2
+    inc b
+
+    jr nc, .divLoop\@
+    ld a, b
+
+ENDM
+
 ; Multiply method
-MACRO MULT
+MACRO MULTA
 
     ld c, a
     ld b, \1

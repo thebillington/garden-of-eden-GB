@@ -23,5 +23,13 @@ DEF IMAGES_INC = 1
     EXPORT pipet2_tile_data_end
     EXPORT pipet3_tile_data
     EXPORT pipet3_tile_data_end
+    EXPORT splashscreen_map_data
+    EXPORT splashscreen_map_data_end
+    EXPORT splashscreen_tile_data
+    EXPORT splashscreen_tile_data_end
+    EXPORT gamewindow_map_data
+    EXPORT gamewindow_map_data_end
+    EXPORT gamewindow_tile_data
+    EXPORT gamewindow_tile_data_end
 
     ENDC ; IMAGES_INC
