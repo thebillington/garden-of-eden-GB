@@ -16,7 +16,6 @@ for (var i = 0; i < HORIZONTALDATATILES; i++) {
 
 let SELECTEDDATATILE;
 let SELECTEDDATATILEDATA;
-let SELECTEDMAPTILE;
 
 let colours = ["#0f380f", "#306230", "#8bac0f", "#9bbc0f"];
 
@@ -68,9 +67,11 @@ var tiledata = function(sketch) {
     function mouseClick() {
         let xTilePos = parseInt(sketch.mouseX / TILEDATAWIDTH);
         let yTilePos = parseInt(sketch.mouseY / TILEDATAHEIGHT);
-        if (SELECTEDMAPTILE) {
-            tilemapArray[SELECTEDMAPTILE.x][SELECTEDMAPTILE.y] = xTilePos + (yTilePos * HORIZONTALDATATILES);
-            SELECTEDMAPTILE = undefined;
+        if (SELECTEDMAPTILES.length > 0) {
+            for (var i = 0; i < SELECTEDMAPTILES.length; i++) {
+                tilemapArray[SELECTEDMAPTILES[i].x][SELECTEDMAPTILES[i].y] = xTilePos + (yTilePos * HORIZONTALDATATILES);
+            }
+            SELECTEDMAPTILES = [];
         } else {
             SELECTEDDATATILE = { x: xTilePos, y: yTilePos };
             SELECTEDDATATILEDATA = [...tiledataArray[xTilePos][yTilePos]];
@@ -83,6 +84,8 @@ let tilemapArray = [];
 for (var i = 0; i < 32; i++) {
     tilemapArray.push([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);
 }
+
+let SELECTEDMAPTILES = [];
 
 var tilemap = function(sketch) {
     let TILEWIDTH;
@@ -112,7 +115,7 @@ var tilemap = function(sketch) {
                 let selectedTile = tiledataArray[selectedTileX][selectedTileY];
                 let TILEX = x * TILEWIDTH;
                 let TILEY = y * TILEHEIGHT;
-                if (SELECTEDMAPTILE && x == SELECTEDMAPTILE.y && y == SELECTEDMAPTILE.x) {
+                if (SELECTEDMAPTILES.some(tile => tile.x == y && tile.y == x)) {
                     sketch.fill("purple");
                     sketch.rect(TILEX - 1, TILEY - 1, TILEWIDTH, TILEHEIGHT);
                     continue;
@@ -133,7 +136,18 @@ var tilemap = function(sketch) {
     function mouseClick() {
         let xTilePos = parseInt(sketch.mouseY / TILEHEIGHT);
         let yTilePos = parseInt(sketch.mouseX / TILEWIDTH);
-        SELECTEDMAPTILE = { x: xTilePos, y: yTilePos };
+        if (SELECTEDMAPTILES.some(tile => tile.x == xTilePos && tile.y == yTilePos)) {
+            let index = -1;
+            for (var i = 0; i < SELECTEDMAPTILES.length; i++) {
+                if (SELECTEDMAPTILES[i].x == xTilePos && SELECTEDMAPTILES[i].y == yTilePos) {
+                    index = i;
+                    break;
+                }
+            }
+            SELECTEDMAPTILES.splice(index, 1);
+        } else {
+            SELECTEDMAPTILES.push({ x: xTilePos, y: yTilePos });
+        }
     }
 }
 
