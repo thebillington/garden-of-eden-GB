@@ -22,6 +22,12 @@
             <button onclick="importTileMap()">Import Map Data</button>
         </div>
         <div id="tileeditor">
+            <div id="editorTools">
+                <div id="white" class="colourSelect" onclick="selectColour(3)"></div>
+                <div id="light" class="colourSelect" onclick="selectColour(2)"></div>
+                <div id="dark" class="colourSelect" onclick="selectColour(1)"></div>
+                <div id="black" class="colourSelect" onclick="selectColour(0)"></div>
+            </div>
             <div id="editorcanvas"></div>
             <div id="canvasbuttons">
                 <button onclick="closeClick()">Close</button>

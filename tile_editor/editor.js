@@ -19,6 +19,9 @@ let SELECTEDDATATILEDATA;
 
 let colours = ["#0f380f", "#306230", "#8bac0f", "#9bbc0f"];
 
+let selectedDrawColour = 3;
+function selectColour(c) { selectedDrawColour = c; }
+
 var tiledata = function(sketch) {
 
     let TILEDATACANVASWIDTH;
@@ -179,7 +182,7 @@ var tileeditor = function(sketch) {
     function mouseClick() {
         let xPixelPos = parseInt(sketch.mouseX / PIXELWIDTH);
         let yPixelPos = parseInt(sketch.mouseY / PIXELHEIGHT);
-        SELECTEDDATATILEDATA[yPixelPos][xPixelPos] = (SELECTEDDATATILEDATA[yPixelPos][xPixelPos] + 1) % 4;
+        SELECTEDDATATILEDATA[yPixelPos][xPixelPos] = selectedDrawColour;
     }
 }
 
@@ -199,6 +202,10 @@ function toggleColours() {
     } else {
         colours = ["black", "darkgrey", "lightgrey", "white"];
         document.getElementById("body").style.backgroundColor = "lightgrey";
+    }
+    let colourPicker = document.getElementsByClassName("colourSelect");
+    for (var i = 0; i < 4; i++) {
+        colourPicker[i].style.backgroundColor = colours[3-i];
     }
 }
 
