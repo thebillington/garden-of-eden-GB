@@ -58,16 +58,12 @@ canvas {
     top: 5%;
     border: 2px solid black;
     text-align: center;
-    padding-top: 20px;
-    padding-bottom: 20px;
-    overflow-y: auto;
 }
 
 #controls button {
     margin-bottom: 5px;
 }
 
-form * {
-    display: block;
-    margin: 10px;
-  }
+hr {
+    border-color: black;
+}

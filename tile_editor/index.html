@@ -11,8 +11,15 @@
         <div id="tiledata"></div>
         <div id="tilemap"></div>
         <div id="controls">
-            <button onclick="toggleColours()">Toggle Colours</button>
-            <button onclick="saveTileData()">Save Tile Map</button>
+            <button style="margin-top:15px;" onclick="toggleColours()">Toggle Colours</button>
+            <hr>
+            <input type="text" id="tiledata_filename" placeholder="tiledata_filename.asm">
+            <button onclick="exportTileData()">Export Tile Data</button>
+            <button onclick="importTileData()">Import Tile Data</button>
+            <hr>
+            <input type="text" id="tilemap_filename" placeholder="tilemap_filename.asm">
+            <button onclick="exportTileMap()">Export Map Data</button>
+            <button onclick="importTileMap()">Import Map Data</button>
         </div>
         <div id="tileeditor">
             <div id="editorcanvas"></div>
@@ -20,7 +27,7 @@
                 <button onclick="closeClick()">Close</button>
             </div>
         </div>
-        <form onsubmit="download(this['name'].value, this['text'].value)">
+        <form onsubmit="download(this['name'].value, this['text'].value)" style="display: none;">
             <input type="text" name="name" value="test.txt">
             <textarea name="text"></textarea>
             <input type="submit" value="Download">

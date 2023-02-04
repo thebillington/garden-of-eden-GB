@@ -80,8 +80,8 @@ var tiledata = function(sketch) {
 }
 
 let tilemapArray = [];
-for (var i = 0; i < 20; i++) {
-    tilemapArray.push([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);
+for (var i = 0; i < 32; i++) {
+    tilemapArray.push([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);
 }
 
 var tilemap = function(sketch) {
@@ -104,8 +104,8 @@ var tilemap = function(sketch) {
     }
 
     sketch.draw = function() {
-        for (var y = 0; y < tilemapArray.length; y++) {
-            for (var x = 0; x < tilemapArray[y].length; x++) {
+        for (var y = 0; y < 20; y++) {
+            for (var x = 0; x < 18; x++) {
                 let selectedTilePosition = tilemapArray[y][x];
                 let selectedTileX = parseInt(selectedTilePosition % HORIZONTALDATATILES);
                 let selectedTileY = parseInt(selectedTilePosition / HORIZONTALDATATILES);
@@ -188,18 +188,69 @@ function toggleColours() {
     }
 }
 
-function saveTileData() {
+function exportTileData() {
     let tileDataString = "";
-    for (var i = 0; i < tiledataArray.length; i++) {
-        for (var j = 0; j < tiledataArray[i].length; j++) {
-            tileDataString += `${convertTileToHex(tiledataArray[i][j])}\n`;
+    for (var i = 0; i < VERTICALDATATILES; i++) {
+        for (var j = 0; j < HORIZONTALDATATILES; j++) {
+            tileDataString += `${i == 0 && j == 0 ? "" : "\n"}${convertTileToHex(tiledataArray[j][i])}`;
         }
     }
-    download("tilemap.asm", tileDataString);
+    download(document.getElementById("tiledata_filename").value, tileDataString);
 }
 
-function saveTileMap() {
+function importTileData() {
+    selectFile(e => { 
+        let file = e.target.files[0];
+        document.getElementById("tiledata_filename").value = file.name;
+        readFile(file, e => {
+                let hexData = e.target.result.replaceAll("DB", "").replaceAll("$", "").replaceAll(" ", "").replace(/\n\s*$/, "").split("\n");
+                for (var i = hexData.length; i < 360; i++) {
+                    hexData.push("00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00");
+                }
+                let newTiledataArray = [];
+                for (var i = 0; i < HORIZONTALDATATILES; i++) {
+                    let verticalDataTile = [];
+                    for (var j = 0; j < VERTICALDATATILES; j++) {
+                        verticalDataTile.push(convertHexToTile(hexData[i+j*HORIZONTALDATATILES].split(",")));
+                    }
+                    newTiledataArray.push(verticalDataTile);
+                }
+                tiledataArray = newTiledataArray;
+            }
+        );
+    });
+}
 
+function exportTileMap() {
+    let tileMapString = "";
+    for (var i = 0; i < 32; i++) {
+        tileMapString += `${i == 0 ? "" : "\n"}${convertRowToHex(tilemapArray[i].slice(0,16))}`;
+        tileMapString += `\n${convertRowToHex(tilemapArray[i].slice(16,32))}`;
+    }
+    download(document.getElementById("tilemap_filename").value, tileMapString);
+}
+
+function importTileMap() {
+    selectFile(e => { 
+        let file = e.target.files[0];
+        document.getElementById("tilemap_filename").value = file.name;
+        readFile(file, e => {
+                let hexData = e.target.result.replaceAll("DB", "").replaceAll("$", "").replaceAll(" ", "").replaceAll("\n", ",").split(",");
+                for (var i = hexData.length; i < 32*32; i++) {
+                    hexData.push("00");
+                }
+                let newTilemapArray = [];
+                for (var i = 0; i < parseInt(hexData.length/32); i++) {
+                    let pixelData =[];
+                    for (var j = 0; j < 32; j++) {
+                        pixelData.push(convertHexToDenary(hexData[i*32+j]));
+                    }
+                    newTilemapArray.push(pixelData);
+                }
+                tilemapArray = newTilemapArray;
+            }
+        );
+    });
 }
 
 function download(filename, text) {
@@ -213,4 +264,18 @@ function download(filename, text) {
     element.click();
   
     document.body.removeChild(element);
-  }
+}
+
+function selectFile(callback) {
+    var input = document.createElement('input');
+    input.type = 'file';
+    input.onchange = callback;
+    input.click();
+}
+
+function readFile(file, callback) {
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = callback;
+    reader.readAsText(file);
+}
