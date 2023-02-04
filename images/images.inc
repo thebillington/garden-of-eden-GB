@@ -31,5 +31,9 @@ DEF IMAGES_INC = 1
     EXPORT gamewindow_map_data_end
     EXPORT gamewindow_tile_data
     EXPORT gamewindow_tile_data_end
+    EXPORT studiologo_map_data
+    EXPORT studiologo_map_data_end
+    EXPORT studiologo_tile_data
+    EXPORT studiologo_tile_data_end
 
     ENDC ; IMAGES_INC
