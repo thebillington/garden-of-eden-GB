@@ -196,6 +196,8 @@ ENDR
 
     CheckMovement                       ; Check for D-Pad pressed and move accordingly
 
+    CheckTileRotation                   ; Check for button pressed and rotate tiles accordingly
+
     jp .loop                            ; Jump back to the top of the game loop
 
 ; -------- END Main Loop --------

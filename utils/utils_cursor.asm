@@ -88,3 +88,20 @@ MACRO SetCursorPosition
     ld [hl], a                      ; Store the tile position left bit based on whether we carried
 
 ENDM
+
+MACRO GetCursorTile
+
+    ld hl, CURSOR_POSITION_LEFT
+    ld a, [hl]
+    ld b, a                             ; Store the left cursor pointer in b
+
+    ld hl, CURSOR_POSITION_RIGHT
+    ld a, [hl]
+    ld c, a                             ; Store the right cursor pointer in c
+
+    ld hl, 0
+    add hl, bc                          ; Load hl with the pointer to the memory map tile for cursor
+
+    ld a, [hl]                          ; Load the tile map pointer for the cursor
+
+ENDM
