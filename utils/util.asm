@@ -12,3 +12,7 @@ INCLUDE "utils_math.asm"
 INCLUDE "utils_random.asm"
 
 INCLUDE "utils_sprite.asm"
+
+INCLUDE "utils_cursor.asm"
+
+INCLUDE "utils_controller.asm"

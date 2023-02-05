@@ -170,7 +170,25 @@ ENDR
     AddSixteenBitHL _GAME_WINDOW_OFFSET
 ENDR
 
-    SwitchScreenOn LCDCF_ON | LCDCF_BG8000 | LCDCF_BGON   ; utils_hardware -> SwitchScreenOn Macro
+; ------- Load cursor sprite ----------
+
+    LoadCursor                          
+
+; ------- Switch screen on ----------
+
+    SwitchScreenOn LCDCF_ON | LCDCF_BG8000 | LCDCF_BGON | LCDCF_OBJON | LCDCF_OBJ8   ; utils_hardware -> SwitchScreenOn Macro
+
+; -------- START Main Loop ---------
+.loop
+    WaitVBlankIF                        ; Wait for VBlank interrupt (this should get us running at ~60Hz)
+
+    FetchJoypadState                    ; Fetch current state of joypad
+
+    CheckMovement                       ; Check for D-Pad pressed and move accordingly
+
+    jp .loop                            ; Jump back to the top of the game loop
+
+; -------- END Main Loop --------
 
 ; -------- Lock up the CPU ---------
 .debug         

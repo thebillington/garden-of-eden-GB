@@ -12,4 +12,7 @@ DEF _BG_MAP EQU $9000                       ; $9000->$97FF
 DEF OAMDATALOC EQU _RAM                     ; Using the first 160 bytes of RAM as OAM
 DEF OAMDATALOCBANK EQU OAMDATALOC / $100    ; gets the upper byte of location
 
+CURSOR_START_POS_Y EQU $30                  ; Starting cursor y location
+CURSOR_START_POS_X EQU $28                  ; Starting cursor x location
+
     ENDC ; CONSTANTS_INC
