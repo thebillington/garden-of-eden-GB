@@ -69,9 +69,25 @@ MACRO RotateTile
 
     cp CORNER_PIECE_TOP_RIGHT      ; Compare to the corner piece
 
-    jr nz, .endCheck\@          ; Skip check if no match
+    jr nz, .horizontalStraight\@          ; Skip check if no match
     
     RotateCornerPiece \1            ; If this is a corner piece, rotate corner
+
+.horizontalStraight\@
+
+    cp STRAIGHT_PIECE_HORIZONTAL      ; Compare to the corner piece
+
+    jr nz, .verticalStraight\@          ; Skip check if no match
+    
+    RotateStraightPiece \1            ; If this is a straight piece, rotate
+
+.verticalStraight\@
+
+    cp STRAIGHT_PIECE_VERTICAL      ; Compare to the corner piece
+
+    jr nz, .endCheck\@              ; Skip check if no match
+    
+    RotateStraightPiece \1            ; If this is a straight piece, rotate
 
 .endCheck\@
 
@@ -113,4 +129,33 @@ ENDM
 
 MACRO RotateStraightPiece
 
+    ld e, \1                        ; Load passed parameter (direction of rotation)
+
+    ld a, [hl]
+    add e                           ; Load the current selected tile and inc/dec
+    ld [hl], a                      ; Put the new tile back in
+
+.checkTopWrap\@
+
+    cp STRAIGHT_PIECE_HORIZONTAL + $02
+
+    jr nz, .checkBottomWrap\@
+
+    ld a, STRAIGHT_PIECE_HORIZONTAL
+    ld [hl], a
+
+    jr .endCheck\@
+
+.checkBottomWrap\@
+
+    cp STRAIGHT_PIECE_HORIZONTAL - $01
+
+    jr nz, .endCheck\@
+
+    ld a, STRAIGHT_PIECE_VERTICAL
+    ld [hl], a
+
+.endCheck\@
+
+    DisableMovement                 ; Debounce
 ENDM
