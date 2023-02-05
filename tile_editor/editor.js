@@ -59,11 +59,7 @@ var tiledata = function(sketch) {
                 sketch.rect(TILEX - 1, TILEY - 1, TILEDATAWIDTH, TILEDATAHEIGHT);
                 for (var pixelY = 0; pixelY < tiledataArray[x][y].length; pixelY++) {
                     for (var pixelX = 0; pixelX < tiledataArray[x][y][pixelY].length; pixelX++) {
-                        try {
-                            sketch.fill(colours[tiledataArray[x][y][pixelY][pixelX]]);
-                        } catch {
-                            
-                        }
+                        sketch.fill(colours[tiledataArray[x][y][pixelY][pixelX]]);
                         sketch.strokeWeight(1);
                         sketch.rect(TILEX + (pixelX * TILEDATAPIXELWIDTH), TILEY + (pixelY * TILEDATAPIXELHEIGHT), TILEDATAPIXELWIDTH, TILEDATAPIXELHEIGHT);
                     }
@@ -134,11 +130,7 @@ var tilemap = function(sketch) {
                 sketch.rect(TILEX - 1, TILEY - 1, TILEWIDTH, TILEHEIGHT);
                 for (var pixelY = 0; pixelY < selectedTile.length; pixelY++) {
                     for (var pixelX = 0; pixelX < selectedTile[pixelY].length; pixelX++) {
-                        try {
-                            sketch.fill(colours[selectedTile[pixelY][pixelX]]);
-                        } catch {
-
-                        }
+                        sketch.fill(colours[selectedTile[pixelY][pixelX]]);
                         sketch.strokeWeight(1);
                         sketch.rect(TILEX + (pixelX * PIXELWIDTH), TILEY + (pixelY * PIXELHEIGHT), PIXELWIDTH, PIXELHEIGHT);
                     }
@@ -237,7 +229,7 @@ function importTileData() {
         let file = e.target.files[0];
         document.getElementById("tiledata_filename").value = file.name;
         readFile(file, e => {
-                let hexData = e.target.result.replaceAll("DB", "").replaceAll("$", "").replaceAll(" ", "").replace(/\n\s*$/, "").split("\n");
+                let hexData = e.target.result.replaceAll("DB ", "").replaceAll("$", "").replaceAll(" ", "").replace(/\n\s*$/, "").split("\n");
                 for (var i = hexData.length; i < 360; i++) {
                     hexData.push("00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00");
                 }
@@ -269,7 +261,7 @@ function importTileMap() {
         let file = e.target.files[0];
         document.getElementById("tilemap_filename").value = file.name;
         readFile(file, e => {
-                let hexData = e.target.result.replaceAll("DB", "").replaceAll("$", "").replaceAll(" ", "").replaceAll("\n", ",").split(",");
+                let hexData = e.target.result.replaceAll("DB ", "").replaceAll("$", "").replaceAll(" ", "").replaceAll("\n", ",").split(",");
                 for (var i = hexData.length; i < 32*32; i++) {
                     hexData.push("00");
                 }
