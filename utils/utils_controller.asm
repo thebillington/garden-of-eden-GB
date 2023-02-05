@@ -1,8 +1,13 @@
 MACRO CheckMovement
 
+    LoadCanMove
+    jp z, .endCheck\@                       ; If cursor can't move, end check
+
     CheckHorizontalMovement
 
     CheckVerticalMovement
+
+.endCheck\@
 
 ENDM
 
@@ -15,7 +20,7 @@ MACRO CheckHorizontalMovement
 
     jr z, .leftPadCheck\@                   ; If right button isn't pressed, check for left button press
 
-    ld d, $00                               ; Point d to the cursor sprite
+    ld d, CURSOR                            ; Point d to the cursor sprite
     ld e, CURSOR_MAX_POS_X                  ;  Set e to the max x position
 
     Spr_getX d                              ; Load the x position of the sprite
@@ -35,7 +40,7 @@ MACRO CheckHorizontalMovement
 
     jr z, .endCheck\@                      ; If left button isn't pressed, end check state
 
-    ld d, $00                               ; Point d to the cursor sprite
+    ld d, CURSOR                               ; Point d to the cursor sprite
     ld e, CURSOR_MIN_POS_X                  ;  Set e to the min x position
 
     Spr_getX d                              ; Load the x position of the sprite
@@ -59,7 +64,7 @@ MACRO CheckVerticalMovement
 
     jr z, .upPadCheck\@                   ; If right button isn't pressed, check for left button press
 
-    ld d, $00                               ; Point d to the cursor sprite
+    ld d, CURSOR                               ; Point d to the cursor sprite
     ld e, CURSOR_MIN_POS_Y                  ;  Set e to the min y position
 
     Spr_getY d                              ; Load the y position of the sprite
@@ -79,7 +84,7 @@ MACRO CheckVerticalMovement
 
     jr z, .endCheck\@                      ; If left button isn't pressed, end check state
 
-    ld d, $00                               ; Point d to the cursor sprite
+    ld d, CURSOR                               ; Point d to the cursor sprite
     ld e, CURSOR_MAX_POS_Y                  ;  Set e to the max y position
 
     Spr_getY d                              ; Load the y position of the sprite
@@ -91,5 +96,30 @@ MACRO CheckVerticalMovement
     MoveCursorY -8                         ; Move the player 1 to the left
 
 .endCheck\@
+
+ENDM
+
+MACRO EnableMovement
+
+    ld a, 1
+    ld hl, CAN_MOVE
+    ld [hl], a                      ; Enable movement
+
+ENDM
+
+MACRO DisableMovement
+
+    ld a, 0
+    ld hl, CAN_MOVE
+    ld [hl], a                      ; Disable movement
+
+ENDM
+
+MACRO LoadCanMove
+
+    ld d, 0
+    ld hl, CAN_MOVE
+    ld a, [hl]
+    sub d
 
 ENDM

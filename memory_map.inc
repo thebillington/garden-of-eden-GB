@@ -21,6 +21,8 @@ _SPRITE_VRAM EQU _BLOCK2
 
 ; Sprites
 
+CURSOR EQU $00
+
 ; -------- Usable RAM ------
 
 ; -------- OAM ------\ ; Using the first 160 bytes of RAM as OAM
@@ -35,5 +37,8 @@ INTR_STATE EQU PREV_BTN_STATE + $01
 
 ; Random Number Generator (RNG) Seed [3 bytes]
 SEED EQU INTR_STATE + $01
+
+; Boolean flag to state whether player can move [1 bytes]
+CAN_MOVE EQU SEED + $03
 
 ENDC

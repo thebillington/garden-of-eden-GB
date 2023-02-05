@@ -4,7 +4,7 @@ INCLUDE "constants.inc"
 
 MACRO LoadCursor
 
-    ld d, $00
+    ld d, CURSOR
 
     Spr_getY d
     ld a, CURSOR_START_POS_Y
@@ -21,11 +21,14 @@ MACRO LoadCursor
     Spr_getAttr d
     ld [hl], OAMF_PAL0
 
+    ld hl, CAN_MOVE
+    ld [hl], 1                      ; Set can move boolean to true
+
 ENDM
 
 Macro MoveCursorY
 
-    ld d, $00
+    ld d, CURSOR
     ld e, \1
 
     Spr_getY d
@@ -33,16 +36,20 @@ Macro MoveCursorY
     add e
     ld [hl], a
 
+    DisableMovement
+
 ENDM
 
 Macro MoveCursorX
 
-    ld d, $00
+    ld d, CURSOR
     ld e, \1
 
     Spr_getX d
     ld a, [hl]
     add e
     ld [hl], a
+
+    DisableMovement
 
 ENDM
