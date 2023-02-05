@@ -1,11 +1,16 @@
+INCLUDE "hardware.inc"
+INCLUDE "memory_map.inc"
+INCLUDE "constants.inc"
+
 MACRO CheckMovement
 
     LoadCanMove
     jp nz, .endCheck\@                       ; If cursor can't move, end check
 
     CheckHorizontalMovement
+    CheckVerticalMovement                   ; Check horizontal and vertical movement
 
-    CheckVerticalMovement
+    SetCursorPosition                       ; Set the cursor offset position
 
 .endCheck\@
 
