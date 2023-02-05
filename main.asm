@@ -180,9 +180,11 @@ ENDR
     ld [rDIV], a    ; Load DIV with A (Reset to zero)
     ld [rTAC], a    ; Load TAC with A
 
-; ------- Load cursor sprite ----------
+; ------- Load cursor sprites ----------
 
-    LoadCursor                          
+    LoadCursor
+    
+    LoadCheckCursor
 
 ; ------- Switch screen on ----------
 
