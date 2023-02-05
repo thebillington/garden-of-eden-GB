@@ -13,5 +13,9 @@ DEF IMAGES_INC = 1
     EXPORT studiologo_map_data_end
     EXPORT studiologo_tile_data
     EXPORT studiologo_tile_data_end
+    EXPORT debugwindow_map_data
+    EXPORT debugwindow_map_data_end
+    EXPORT debugwindow_tile_data
+    EXPORT debugwindow_tile_data_end
 
     ENDC ; IMAGES_INC

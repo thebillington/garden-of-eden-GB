@@ -138,10 +138,14 @@ Start:
     ; jp .startGame
 
 ; -------- Wait for start button press ------
-    FetchJoypadState    ; utils_hardware -> FetchJoypadState MACRO
-    and PADF_START      ; If start then set NZ flag
+    FetchJoypadState                ; utils_hardware -> FetchJoypadState MACRO
+    and PADF_START | PADF_SELECT    ; If start or select then set NZ flag
 
-    jr z, .splash       ; If not start then loop
+    jr z, .splash                   ; If not start or select then loop
+
+    and PADF_START                  ; If start then set NZ flag
+
+    jp z, .startDebug               ; if not start then jump to debug
 
 .startGame
 ; ------- Seed the Random Number Generator (RNG) ----------
@@ -169,6 +173,17 @@ REPT _GAME_WINDOW_WIDTH
 ENDR
     AddSixteenBitHL _GAME_WINDOW_OFFSET
 ENDR
+
+    SwitchScreenOn LCDCF_ON | LCDCF_BG8000 | LCDCF_BGON   ; utils_hardware -> SwitchScreenOn Macro
+
+.startDebug
+
+; -------- Clear the screen ---------
+    SwitchScreenOff     ; utils_hardware -> SwitchScreenOff Macro
+    ClearVRAM           ; utils_clear -> ClearVRAM Macro
+
+; ------- Load game screen into VRAM----------
+    LoadImageBanked debugwindow_tile_data, debugwindow_tile_data_end, debugwindow_map_data, debugwindow_map_data_end
 
     SwitchScreenOn LCDCF_ON | LCDCF_BG8000 | LCDCF_BGON   ; utils_hardware -> SwitchScreenOn Macro
 
