@@ -15,10 +15,14 @@ DEF _GAME_WINDOW_WIDTH EQU $C
 DEF _GAME_WINDOW_HEIGHT EQU $A
 DEF _GAME_WINDOW_OFFSET EQU $14
 
+DEF CAN_MOVE_COUNT EQU $2
+
 ; Sprite VRAM map location
 _SPRITE_VRAM EQU _BLOCK2
 
 ; Sprites
+
+CURSOR EQU $00
 
 ; -------- Usable RAM ------
 
@@ -40,5 +44,18 @@ CUR_DIR EQU SEED + $03
 
 ; Fail flag, set if check failed [1 bytes]
 FAIL_FLAG EQU CUR_DIR + $01
+
+; Boolean flag to state weather the game loop has started [1 bytes]
+GAME_START EQU FAIL_FLAG + $01
+
+; Boolean flag to state whether player can move [1 bytes]
+CAN_MOVE EQU GAME_START + $01
+
+; Boolean flag to state whether a multiply did carry [1 bytes]
+MULT_A_DID_CARRY EQU CAN_MOVE + $01
+
+; Tile position of the cursor [2 bytes]
+CURSOR_POSITION_LEFT EQU MULT_A_DID_CARRY + $01
+CURSOR_POSITION_RIGHT EQU CURSOR_POSITION_LEFT + $01
 
 ENDC
