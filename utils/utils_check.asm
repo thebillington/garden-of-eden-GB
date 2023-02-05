@@ -65,7 +65,6 @@ MACRO Check
     jp .checkLoop\@
 .dirDown\@
     MoveCheckCursorY 8
-    jp .debug
     ; A has tile number
     sub CORNER_PIECE_BOTTOM_RIGHT
     ; A has offset of pipe

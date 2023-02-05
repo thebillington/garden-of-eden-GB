@@ -103,12 +103,12 @@ MACRO SetCheckCursorPosition
 
     add b                           ; Add the x offset
 
-    ld hl, CURSOR_POSITION_RIGHT
+    ld hl, CHECK_CURSOR_POSITION_RIGHT
     ld [hl], a                      ; Store the result
 
     ld hl, MULT_A_DID_CARRY
     ld a, [hl]
-    ld hl, CURSOR_POSITION_LEFT
+    ld hl, CHECK_CURSOR_POSITION_LEFT
     add $98
     ld [hl], a                      ; Store the tile position left bit based on whether we carried
 
