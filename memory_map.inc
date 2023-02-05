@@ -15,7 +15,6 @@ DEF _GAME_WINDOW_WIDTH EQU $C
 DEF _GAME_WINDOW_HEIGHT EQU $A
 DEF _GAME_WINDOW_OFFSET EQU $14
 
-
 ; Sprite VRAM map location
 _SPRITE_VRAM EQU _BLOCK2
 
@@ -35,5 +34,11 @@ INTR_STATE EQU PREV_BTN_STATE + $01
 
 ; Random Number Generator (RNG) Seed [3 bytes]
 SEED EQU INTR_STATE + $01
+
+; Current tile DIR [1 bytes]
+CUR_DIR EQU SEED + $03
+
+; Fail flag, set if check failed [1 bytes]
+FAIL_FLAG EQU CUR_DIR + $01
 
 ENDC

@@ -12,4 +12,11 @@ DEF _BG_MAP EQU $9000                       ; $9000->$97FF
 DEF OAMDATALOC EQU _RAM                     ; Using the first 160 bytes of RAM as OAM
 DEF OAMDATALOCBANK EQU OAMDATALOC / $100    ; gets the upper byte of location
 
+DEF DIR_UP EQU $1
+DEF DIR_RIGHT EQU $2
+DEF DIR_DOWN EQU $4
+DEF DIR LEFT EQU $8
+
+DEF MAZE_IN_DIR EQU $2
+
     ENDC ; CONSTANTS_INC
