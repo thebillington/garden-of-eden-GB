@@ -15,6 +15,15 @@ MACRO CheckHorizontalMovement
 
     jr z, .leftPadCheck\@                   ; If right button isn't pressed, check for left button press
 
+    ld d, $00                               ; Point d to the cursor sprite
+    ld e, CURSOR_MAX_POS_X                  ;  Set e to the max x position
+
+    Spr_getX d                              ; Load the x position of the sprite
+    ld a, [hl]                              ; Load a with the sprite x location
+    sub e                                   ; Subtract the cursor max position
+
+    jr z, .endCheck\@                       ; If the position is already equal to the max, end the check
+
     MoveCursorX 8                           ; Move the player one to the right
 
     jr .endCheck\@                          ; If the right pad was checked, don't check the left pad
@@ -25,6 +34,15 @@ MACRO CheckHorizontalMovement
     AND PADF_LEFT                          ; Load the pad state and apply left button mask
 
     jr z, .endCheck\@                      ; If left button isn't pressed, end check state
+
+    ld d, $00                               ; Point d to the cursor sprite
+    ld e, CURSOR_MIN_POS_X                  ;  Set e to the min x position
+
+    Spr_getX d                              ; Load the x position of the sprite
+    ld a, [hl]                              ; Load a with the sprite x location
+    sub e                                   ; Subtract the cursor min position
+
+    jr z, .endCheck\@                       ; If the position is already equal to the min, end the check
 
     MoveCursorX -8                         ; Move the player 1 to the left
 
@@ -41,6 +59,15 @@ MACRO CheckVerticalMovement
 
     jr z, .upPadCheck\@                   ; If right button isn't pressed, check for left button press
 
+    ld d, $00                               ; Point d to the cursor sprite
+    ld e, CURSOR_MIN_POS_Y                  ;  Set e to the min y position
+
+    Spr_getY d                              ; Load the y position of the sprite
+    ld a, [hl]                              ; Load a with the sprite y location
+    sub e                                   ; Subtract the cursor min position
+
+    jr z, .endCheck\@                       ; If the position is already equal to the min, end the check
+
     MoveCursorY 8                           ; Move the player one to the right
 
     jr .endCheck\@                          ; If the right pad was checked, don't check the left pad
@@ -51,6 +78,15 @@ MACRO CheckVerticalMovement
     AND PADF_UP                          ; Load the pad state and apply left button mask
 
     jr z, .endCheck\@                      ; If left button isn't pressed, end check state
+
+    ld d, $00                               ; Point d to the cursor sprite
+    ld e, CURSOR_MAX_POS_Y                  ;  Set e to the max y position
+
+    Spr_getY d                              ; Load the y position of the sprite
+    ld a, [hl]                              ; Load a with the sprite y location
+    sub e                                   ; Subtract the cursor min position
+
+    jr z, .endCheck\@                       ; If the position is already equal to the max, end the check
 
     MoveCursorY -8                         ; Move the player 1 to the left
 

@@ -106,9 +106,10 @@ Start:
     ld [rDIV], a    ; Load DIV with A (Reset to zero)
     ld [rTAC], a    ; Load TAC with A
 
-;  -------- Wait for ~1s before moving on --------
+;  -------- Wait before moving on --------
 .studio
-    ld a, $3F
+    ld a, $0            ; Debug without splash screen
+    ; ld a, $3F         ; Switch for production
     cp b
     jr nz, .studio
 
