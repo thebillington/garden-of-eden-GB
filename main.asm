@@ -106,21 +106,24 @@ Start:
     ld [rDIV], a    ; Load DIV with A (Reset to zero)
     ld [rTAC], a    ; Load TAC with A
 
-;  -------- Wait for ~1s before moving on --------
+;  -------- Wait before moving on --------
 .studio
-    ld a, $3F
+    xor a             ; Debug without splash screen
+    ;ld a, $3F         ; Switch for production
     cp b
     jr nz, .studio
 
-;  -------- Timer setup --------
+;  -------- Pause the Timer --------
     xor a               ; (ld a, 0)
     ld [rTIMA], a       ; Set TIMA to 0
     or TACF_STOP        ; Set STOP bit in A
     or TACF_4KHZ        ; Set divider bit in A
     ld [rTAC], a        ; Load TAC with A (settings)
-    ld a, 0             ; Load A with 0
-    ld [rTMA], a        ; Load TMA with A
-    ld [rTIMA], a       ; Load TIMA with A (Reset to zero)
+
+;  -------- Set the game loop flag to 1 --------
+    ld hl, GAME_START
+    ld a, $1
+    ld [hl], a
 
 ; -------- Clear the screen ---------
     SwitchScreenOff     ; utils_hardware -> SwitchScreenOff Macro
@@ -170,7 +173,34 @@ ENDR
     AddSixteenBitHL _GAME_WINDOW_OFFSET
 ENDR
 
-    SwitchScreenOn LCDCF_ON | LCDCF_BG8000 | LCDCF_BGON   ; utils_hardware -> SwitchScreenOn Macro
+;  -------- Timer start --------
+    xor a           ; (ld a, 0)
+     or TACF_4KHZ    ; Set divider bit in A 
+    or TACF_START   ; Set START bit in A
+    ld [rDIV], a    ; Load DIV with A (Reset to zero)
+    ld [rTAC], a    ; Load TAC with A
+
+; ------- Load cursor sprite ----------
+
+    LoadCursor                          
+
+; ------- Switch screen on ----------
+
+    SwitchScreenOn LCDCF_ON | LCDCF_BG8000 | LCDCF_BGON | LCDCF_OBJON | LCDCF_OBJ8   ; utils_hardware -> SwitchScreenOn Macro
+
+; -------- START Main Loop ---------
+.loop
+    WaitVBlankIF                        ; Wait for VBlank interrupt (this should get us running at ~60Hz)
+
+    FetchJoypadState                    ; Fetch current state of joypad
+
+    CheckMovement                       ; Check for D-Pad pressed and move accordingly
+
+    CheckTileRotation                   ; Check for button pressed and rotate tiles accordingly
+
+    jp .loop                            ; Jump back to the top of the game loop
+
+; -------- END Main Loop --------
 
 ; -------- Lock up the CPU ---------
 .debug         
@@ -189,5 +219,30 @@ VBHandler:
 
 ; -------- Timer Interrupt Handler ---------
 TIHandler:
+    push af
+    push hl
+
+    ld hl, GAME_START
+    ld a, [hl]
+    and $1
+    jr nz, .timerGame
+
+.timerStudio
     inc b           ; Incriment B register every tick
+
+    pop hl
+    pop af
+    reti
+
+.timerGame
+    ld hl, CAN_MOVE
+    ld a, [hl]
+    cp CAN_MOVE_COUNT
+    jr z, .timerSkip
+
+    inc [hl]
+
+.timerSkip
+    pop hl
+    pop af
     reti            ; Return and enable interrupts

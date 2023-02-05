@@ -62,6 +62,9 @@ ENDM
 ; Divide method
 MACRO DIVIDE
 
+    push af
+    push bc
+
     ld a, \1
     ld b, $00
 
@@ -72,32 +75,56 @@ MACRO DIVIDE
     jr nc, .divLoop\@
     ld a, b
 
+    pop af
+    pop bc
+
 ENDM
 
 ; Divide method
 MACRO DIVIDEA
 
+    push bc
+
     ld b, $00
 
 .divLoop\@
-    sub \2
+    sub \1
     inc b
 
     jr nc, .divLoop\@
     ld a, b
 
+    pop bc
+
 ENDM
 
 ; Multiply method
 MACRO MULTA
+    push hl
+
+    ld hl, MULT_A_DID_CARRY
+    ld [hl], 0
+
+    push bc
 
     ld c, a
     ld b, \1
 
 .multLoop\@
     add c
+
+    jr nc, .nocarry\@
+
+    ld hl, MULT_A_DID_CARRY
+    ld [hl], 1
+
+.nocarry\@
+
     dec b
 
     jr nz, .multLoop\@
+
+    pop bc
+    pop hl
 
 ENDM
