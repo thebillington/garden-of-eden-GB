@@ -5,6 +5,10 @@ DEF IMAGES_INC = 1
     EXPORT splashscreen_map_data_end
     EXPORT splashscreen_tile_data
     EXPORT splashscreen_tile_data_end
+    EXPORT credits_map_data
+    EXPORT credits_map_data_end
+    EXPORT credits_tile_data
+    EXPORT credits_tile_data_end
     EXPORT gamewindow_map_data
     EXPORT gamewindow_map_data_end
     EXPORT gamewindow_tile_data
