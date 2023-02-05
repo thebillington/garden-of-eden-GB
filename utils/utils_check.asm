@@ -6,75 +6,106 @@ MACRO Check
     ld hl, CUR_DIR
     ld [hl], MAZE_IN_DIR
 
-.loop\@
-
     ld a, [hl]
 
+.checkLoop\@
     cp DIR_UP
-    jr z, .dirUp
+    jp z, .dirUp\@
 
     cp DIR_RIGHT
-    jr z, .dirRight
+    jp z, .dirRight\@
 
     cp DIR_DOWN
-    jr z, .dirDown
+    jp z, .dirDown\@
 
     cp DIR_LEFT
-    jr z, .dirLeft
+    jp z, .dirLeft\@
 
-.dirUp
-    ;GetNextDIR DIR_UP       ; Get the next tile DIR in A
+.dirUp\@
+    MoveCheckCursorY -8
+    ; A has tile number
+    sub CORNER_PIECE_BOTTOM_RIGHT
+    ; A has offset of pipe
+    ld hl, dir_table
+    ld bc, $0
+    ld c, a
+    add hl, bc
+    ld a, [hl]
     ld b, a                 ; Backup CUR_DIR in B
 
-    and DIR_DOWN            ; If DIR_DOWN is set then set NZ flag
-    jr z, .failedCheck\@    ; If DIR_DOWN is not set, jump out of check
+    and DIR_DOWN            ; If DIR_UP is set then set NZ flag
+    jp z, .failedCheck\@    ; If DIR_UP is not set, jump out of check
 
-    ; Can move in dir as next tile in dir has oposite dir set
+    ; Can move in dir as nex    pop aft tile in dir has oposite dir set
     ld a, b                 ; Restore CUR_DIR from backup
     and ~DIR_DOWN           ; Remove entry DIR from CUR_DIR
     ; Ready to loop
 
-    jr .loop\@
-.dirRight
-    ;GetNextDIR DIR_RIGHT    ; Get the next tile DIR in A
+    jp .checkLoop\@
+.dirRight\@
+    MoveCheckCursorX 8
+    ; A has tile number
+    sub CORNER_PIECE_BOTTOM_RIGHT
+    ; A has offset of pipe
+    ld hl, dir_table
+    ld bc, $0
+    ld c, a
+    add hl, bc
+    ld a, [hl]
     ld b, a                 ; Backup CUR_DIR in B
 
-    and DIR_LEFT            ; If DIR_LEFT is set then set NZ flag
-    jr z, .failedCheck\@    ; If DIR_LEFT is not set, jump out of check
+    and DIR_LEFT            ; If DIR_UP is set then set NZ flag
+    jp z, .failedCheck\@    ; If DIR_UP is not set, jump out of check
 
     ; Can move in dir as next tile in dir has oposite dir set
     ld a, b                 ; Restore CUR_DIR from backup
     and ~DIR_LEFT           ; Remove entry DIR from CUR_DIR
     ; Ready to loop
 
-    jr .loop\@
-.dirDown
-    ;GetNextDIR DIR_DOWN     ; Get the next tile DIR in A
+    jp .checkLoop\@
+.dirDown\@
+    MoveCheckCursorY 8
+    jp .debug
+    ; A has tile number
+    sub CORNER_PIECE_BOTTOM_RIGHT
+    ; A has offset of pipe
+    ld hl, dir_table
+    ld bc, $0
+    ld c, a
+    add hl, bc
+    ld a, [hl]
     ld b, a                 ; Backup CUR_DIR in B
 
     and DIR_UP              ; If DIR_UP is set then set NZ flag
-    jr z, .failedCheck\@    ; If DIR_UP is not set, jump out of check
+    jp z, .failedCheck\@    ; If DIR_UP is not set, jump out of check
 
     ; Can move in dir as next tile in dir has oposite dir set
     ld a, b                 ; Restore CUR_DIR from backup
     and ~DIR_UP             ; Remove entry DIR from CUR_DIR
     ; Ready to loop
 
-    jr .loop\@
-.dirLeft
-    ;GetNextDIR DIR_LEFT     ; Get the next tile DIR in A
+    jp .checkLoop\@
+.dirLeft\@
+    MoveCheckCursorX -8
+    ; A has tile number
+    sub CORNER_PIECE_BOTTOM_RIGHT
+    ; A has offset of pipe
+    ld hl, dir_table
+    ld bc, $0
+    ld c, a
+    add hl, bc
+    ld a, [hl]
     ld b, a                 ; Backup CUR_DIR in B
 
-    and DIR_RIGHT           ; If DIR_RIGHT is set then set NZ flag
-    jr z, .failedCheck\@    ; If DIR_RIGHT is not set, jump out of check
+    and DIR_RIGHT           ; If DIR_UP is set then set NZ flag
+    jp z, .failedCheck\@    ; If DIR_UP is not set, jump out of check
 
     ; Can move in dir as next tile in dir has oposite dir set
     ld a, b                 ; Restore CUR_DIR from backup
     and ~DIR_RIGHT          ; Remove entry DIR from CUR_DIR
     ; Ready to loop
 
-    jr .loop\@
-
+    jp .checkLoop\@
 .failedCheck\@
     ld hl, FAIL_FLAG
     ld [hl], $1
@@ -85,4 +116,5 @@ MACRO GetNextDIR
 ; need someway to locate current tile
 ; OUTPUT: Load A with DIR of next block
 ;         Set location of next block in ram
+
 ENDM

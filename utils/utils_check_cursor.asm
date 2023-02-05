@@ -15,8 +15,11 @@ MACRO LoadCheckCursor
 	ld [hl], a        
 
     Spr_getTile d
-    ld a, $3F
-    ld [hl], a                          ; Point the sprite to an invisible tile
+    ld a, $D2
+    ld [hl], a
+
+    Spr_getAttr d
+    ld [hl], OAMF_PAL0
 
 ENDM
 

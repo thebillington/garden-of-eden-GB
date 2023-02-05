@@ -4,6 +4,7 @@ INCLUDE "images/images.inc"
 
 ; -------- INCLUDE UTILITIES --------
 INClUDE "util.asm"
+INCLUDE "dir_table.asm"
 INCLUDE "constants.inc"
 
 ; -------- INTERRUPT VECTORS --------
