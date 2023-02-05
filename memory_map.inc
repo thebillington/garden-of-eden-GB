@@ -15,6 +15,8 @@ DEF _GAME_WINDOW_WIDTH EQU $C
 DEF _GAME_WINDOW_HEIGHT EQU $A
 DEF _GAME_WINDOW_OFFSET EQU $14
 
+DEF CAN_MOVE_COUNT EQU $4
+
 
 ; Sprite VRAM map location
 _SPRITE_VRAM EQU _BLOCK2
@@ -38,7 +40,10 @@ INTR_STATE EQU PREV_BTN_STATE + $01
 ; Random Number Generator (RNG) Seed [3 bytes]
 SEED EQU INTR_STATE + $01
 
+; Boolean flag to state weather the game loop has started [1 bytes]
+GAME_START EQU SEED + $03
+
 ; Boolean flag to state whether player can move [1 bytes]
-CAN_MOVE EQU SEED + $03
+CAN_MOVE EQU GAME_START + $01
 
 ENDC

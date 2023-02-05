@@ -1,7 +1,7 @@
 MACRO CheckMovement
 
     LoadCanMove
-    jp z, .endCheck\@                       ; If cursor can't move, end check
+    jp nz, .endCheck\@                       ; If cursor can't move, end check
 
     CheckHorizontalMovement
 
@@ -117,9 +117,8 @@ ENDM
 
 MACRO LoadCanMove
 
-    ld d, 0
     ld hl, CAN_MOVE
     ld a, [hl]
-    sub d
+    cp CAN_MOVE_COUNT
 
 ENDM
