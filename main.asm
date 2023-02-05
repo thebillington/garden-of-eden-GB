@@ -108,7 +108,7 @@ Start:
 
 ;  -------- Wait for ~1s before moving on --------
 .studio
-    ld a, $F
+    ld a, $3F
     cp b
     jr nz, .studio
 
