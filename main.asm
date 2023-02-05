@@ -108,8 +108,8 @@ Start:
 
 ;  -------- Wait before moving on --------
 .studio
-    xor a             ; Debug without splash screen
-    ;ld a, $3F         ; Switch for production
+    ;xor a             ; Debug without splash screen
+    ld a, $3F         ; Switch for production
     cp b
     jr nz, .studio
 
