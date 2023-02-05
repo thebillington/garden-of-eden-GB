@@ -179,7 +179,7 @@ ENDR
 
 ;  -------- Timer start --------
     xor a           ; (ld a, 0)
-     or TACF_4KHZ    ; Set divider bit in A 
+    or TACF_4KHZ    ; Set divider bit in A 
     or TACF_START   ; Set START bit in A
     ld [rDIV], a    ; Load DIV with A (Reset to zero)
     ld [rTAC], a    ; Load TAC with A
@@ -201,6 +201,13 @@ ENDR
     CheckMovement                       ; Check for D-Pad pressed and move accordingly
 
     CheckTileRotation                   ; Check for button pressed and rotate tiles accordingly
+
+    FetchJoypadState                    ; utils_hardware -> FetchJoypadState MACRO
+    and PADF_SELECT                     ; If select then set NZ flag
+
+    jp z, .loop
+
+    Check
 
     jp .loop                            ; Jump back to the top of the game loop
 

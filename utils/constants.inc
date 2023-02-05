@@ -17,7 +17,10 @@ DEF DIR_RIGHT EQU $2
 DEF DIR_DOWN EQU $4
 DEF DIR_LEFT EQU $8
 
-DEF MAZE_IN_DIR EQU $2
+EXPORT dir_table
+EXPORT dir_table_end
+
+DEF MAZE_IN_DIR EQU DIR_DOWN
 
 CURSOR_START_POS_Y EQU $30                  ; Starting cursor y location
 CURSOR_START_POS_X EQU $28                  ; Starting cursor x location
