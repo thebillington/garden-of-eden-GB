@@ -128,6 +128,8 @@ Start:
 ; -------- Clear the screen ---------
     SwitchScreenOff     ; utils_hardware -> SwitchScreenOff Macro
 
+.loadSplash
+
 ; -------- Load splash screen ---------
     LoadImageBanked splashscreen_tile_data, splashscreen_tile_data_end, splashscreen_map_data, splashscreen_map_data_end    ; utils_load -> LoadImageBanked Macro
 
@@ -159,6 +161,39 @@ Start:
     SwitchScreenOff     ; utils_hardware -> SwitchScreenOff Macro
 
     LoadImageBanked credits_tile_data, credits_tile_data_end, credits_map_data, credits_map_data_end    ; utils_load -> LoadImageBanked Macro
+
+    SwitchScreenOn LCDCF_ON | LCDCF_BG8000 | LCDCF_BGON   ; utils_hardware -> SwitchScreenOn Macro
+
+;  -------- Timer start --------
+    xor a           ; (ld a, 0)
+    ld b, a         ; Load A into B
+
+    or TACF_4KHZ    ; Set divider bit in A 
+    or TACF_START   ; Set START bit in A
+    ld [rDIV], a    ; Load DIV with A (Reset to zero)
+    ld [rTAC], a    ; Load TAC with A
+
+;  -------- Wait before moving on --------
+.credits
+    ld a, $3F
+    cp b
+    jr nz, .credits
+
+    jp nz, .startGame       ; If not start then loop
+
+    FetchJoypadState    ; utils_hardware -> FetchJoypadState MACRO
+    and PADF_SELECT      ; If start then set NZ flag
+
+    jp nz, .showCredits       ; If not start then loop
+
+    jr .splash
+
+; -------- Credits screen --------
+
+; -------- Load credits screen ---------
+
+.showCredits
+    LoadImage credits_tile_data, credits_tile_data_end, credits_map_data, credits_map_data_end    ; utils_load -> LoadImageBanked Macro
 
     SwitchScreenOn LCDCF_ON | LCDCF_BG8000 | LCDCF_BGON   ; utils_hardware -> SwitchScreenOn Macro
 
