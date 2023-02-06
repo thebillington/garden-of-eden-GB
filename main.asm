@@ -109,8 +109,8 @@ Start:
 
 ;  -------- Wait before moving on --------
 .studio
-    xor a             ; Debug without splash screen
-    ;ld a, $3F         ; Switch for production
+    ;xor a             ; Debug without splash screen
+    ld a, $3F         ; Switch for production
     cp b
     jr nz, .studio
 
@@ -135,7 +135,7 @@ Start:
 .loadSplash
 
 ; -------- Load splash screen ---------
-    LoadImage splashscreen_tile_data, splashscreen_tile_data_end, splashscreen_map_data, splashscreen_map_data_end    ; utils_load -> LoadImageBanked Macro
+    LoadImageBanked splashscreen_tile_data, splashscreen_tile_data_end, splashscreen_map_data, splashscreen_map_data_end    ; utils_load -> LoadImageBanked Macro
 
     SwitchScreenOn LCDCF_ON | LCDCF_BG8000 | LCDCF_BGON   ; utils_hardware -> SwitchScreenOn Macro
 
@@ -143,16 +143,17 @@ Start:
     ; Comment/uncomment this to jump straight to game or display the splash screen and tutorial
     ; jp .startGame
 
-; -------- Wait for start button press ------
+; -------- Wait for start or select button press ------
     FetchJoypadState                ; utils_hardware -> FetchJoypadState MACRO
-    and PADF_START | PADF_SELECT    ; If start or select then set NZ flag
+    ld b, a                         ; Backup A register
+    and PADF_START                  ; If start then set NZ flag
 
-    jp nz, .startGame       ; If not start then loop
+    jp nz, .startGame               ; If not start then loop
 
-    FetchJoypadState    ; utils_hardware -> FetchJoypadState MACRO
-    and PADF_SELECT      ; If start then set NZ flag
+    ld a, b                         ; Restore A from backup
+    and PADF_SELECT                 ; If select then set NZ flag
 
-    jp nz, .showCredits       ; If not start then loop
+    jr nz, .showCredits             ; If not start then loop
 
     jr .splash
 
@@ -161,7 +162,7 @@ Start:
 ; -------- Load credits screen ---------
 
 .showCredits
-    LoadImage credits_tile_data, credits_tile_data_end, credits_map_data, credits_map_data_end    ; utils_load -> LoadImageBanked Macro
+    LoadImageBanked credits_tile_data, credits_tile_data_end, credits_map_data, credits_map_data_end    ; utils_load -> LoadImageBanked Macro
 
     SwitchScreenOn LCDCF_ON | LCDCF_BG8000 | LCDCF_BGON   ; utils_hardware -> SwitchScreenOn Macro
 
