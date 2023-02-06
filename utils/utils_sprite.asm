@@ -5,6 +5,7 @@ INCLUDE "constants.inc"
 ; -------- Sprite Macros --------
 ; Generic sprite function
 MACRO _Spr_get
+    push bc
 .getLoop\@
     and $FF             ; AND A with $FF
     jr z, .getEnd\@     ; If result 0, return value
@@ -13,6 +14,7 @@ MACRO _Spr_get
     dec a               ; Decrement A (count)
     jr .getLoop\@       ; Continue loop
 .getEnd\@
+    pop bc
 ENDM
 
 ; Loads HL with specified sprite Y memory location

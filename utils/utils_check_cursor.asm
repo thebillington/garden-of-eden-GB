@@ -15,17 +15,35 @@ MACRO LoadCheckCursor
 	ld [hl], a        
 
     Spr_getTile d
-    ld a, $3F
-    ld [hl], a                          ; Point the sprite to an invisible tile
+    ld a, $D2
+    ld [hl], a
+
+    Spr_getAttr d
+    ld [hl], OAMF_PAL0
+
+ENDM
+
+MACRO SetCheckCursorXY
+    ld d, CHECK_CURSOR              ; Load cursor sprite position into d
+
+    Spr_getX d                      ; Get the sprite x position pointer
+    ld a, \1                        ; Load new position into a
+    ld [hl], a                      ; Put the new position into the sprite x location
+
+    ld d, CHECK_CURSOR              ; Load cursor sprite position into d
+
+    Spr_getY d                      ; Get the sprite y position pointer
+    ld a, \2                        ; Load movement direction into a
+    ld [hl], a                      ; Store the result
 
 ENDM
 
 MACRO SetCheckCursorY
 
     ld d, CHECK_CURSOR                    ; Load cursor sprite position into d
-    ld a, \1                        ; Load new position into a
 
     Spr_getY d                      ; Get the sprite y position pointer
+    ld a, \1                        ; Load new position into a
     ld [hl], a                      ; Put the new position into the sprite y location
 
     SetCheckCursorPosition
@@ -36,9 +54,9 @@ ENDM
 MACRO SetCheckCursorX
 
     ld d, CHECK_CURSOR                    ; Load cursor sprite position into d
-    ld a, \1                        ; Load new position into a
 
     Spr_getX d                      ; Get the sprite x position pointer
+    ld a, \1                        ; Load new position into a
     ld [hl], a                      ; Put the new position into the sprite x location
 
     SetCheckCursorPosition
@@ -78,7 +96,7 @@ ENDM
 
 MACRO SetCheckCursorPosition
 
-    ld d, CHECK_CURSOR                    ; Load cursor sprite position into d
+    ld d, CHECK_CURSOR              ; Load cursor sprite position into d
 
     Spr_getX d                      ; Get the sprite x position pointer
     ld a, [hl]                      ; Load the x position into a
@@ -88,7 +106,7 @@ MACRO SetCheckCursorPosition
 
     ld b, a                         ; Store the result in b
 
-    ld d, CURSOR                    ; Load cursor sprite position into d
+    ld d, CHECK_CURSOR              ; Load cursor sprite position into d
 
     Spr_getY d                      ; Get the sprite y position pointer
     ld a, [hl]                      ; Load the y position into a
@@ -100,12 +118,12 @@ MACRO SetCheckCursorPosition
 
     add b                           ; Add the x offset
 
-    ld hl, CURSOR_POSITION_RIGHT
+    ld hl, CHECK_CURSOR_POSITION_RIGHT
     ld [hl], a                      ; Store the result
 
     ld hl, MULT_A_DID_CARRY
     ld a, [hl]
-    ld hl, CURSOR_POSITION_LEFT
+    ld hl, CHECK_CURSOR_POSITION_LEFT
     add $98
     ld [hl], a                      ; Store the tile position left bit based on whether we carried
 

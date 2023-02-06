@@ -4,6 +4,7 @@ INCLUDE "images/images.inc"
 
 ; -------- INCLUDE UTILITIES --------
 INClUDE "util.asm"
+INCLUDE "dir_table.asm"
 INCLUDE "constants.inc"
 
 ; -------- INTERRUPT VECTORS --------
@@ -120,21 +121,15 @@ Start:
     or TACF_4KHZ        ; Set divider bit in A
     ld [rTAC], a        ; Load TAC with A (settings)
 
-;  -------- Set the game loop flag to 1 --------
-    ld hl, GAME_START
-    ld a, $1
-    ld [hl], a
-
-; -------- Clear the screen ---------
-    SwitchScreenOff     ; utils_hardware -> SwitchScreenOff Macro
-    ClearVRAM           ; utils_clear -> ClearVRAM Macro
-
 ; -------- Splash screen --------
 
 .loadSplash
 
+; -------- Clear the screen ---------
+    SwitchScreenOff     ; utils_hardware -> SwitchScreenOff Macro
+
 ; -------- Load splash screen ---------
-    LoadImage splashscreen_tile_data, splashscreen_tile_data_end, splashscreen_map_data, splashscreen_map_data_end    ; utils_load -> LoadImageBanked Macro
+    LoadImageBanked splashscreen_tile_data, splashscreen_tile_data_end, splashscreen_map_data, splashscreen_map_data_end    ; utils_load -> LoadImageBanked Macro
 
     SwitchScreenOn LCDCF_ON | LCDCF_BG8000 | LCDCF_BGON   ; utils_hardware -> SwitchScreenOn Macro
 
@@ -142,16 +137,17 @@ Start:
     ; Comment/uncomment this to jump straight to game or display the splash screen and tutorial
     ; jp .startGame
 
-; -------- Wait for start button press ------
-    FetchJoypadState    ; utils_hardware -> FetchJoypadState MACRO
-    and PADF_START      ; If start then set NZ flag
+; -------- Wait for start or select button press ------
+    FetchJoypadState                ; utils_hardware -> FetchJoypadState MACRO
+    ld b, a                         ; Backup A register
+    and PADF_START                  ; If start then set NZ flag
 
-    jp nz, .startGame       ; If not start then loop
+    jp nz, .startGame               ; If not start then loop
 
-    FetchJoypadState    ; utils_hardware -> FetchJoypadState MACRO
-    and PADF_SELECT      ; If start then set NZ flag
+    ld a, b                         ; Restore A from backup
+    and PADF_SELECT                 ; If select then set NZ flag
 
-    jp nz, .showCredits       ; If not start then loop
+    jr nz, .showCredits             ; If not start then loop
 
     jr .splash
 
@@ -160,7 +156,9 @@ Start:
 ; -------- Load credits screen ---------
 
 .showCredits
-    LoadImage credits_tile_data, credits_tile_data_end, credits_map_data, credits_map_data_end    ; utils_load -> LoadImageBanked Macro
+    SwitchScreenOff     ; utils_hardware -> SwitchScreenOff Macro
+
+    LoadImageBanked credits_tile_data, credits_tile_data_end, credits_map_data, credits_map_data_end    ; utils_load -> LoadImageBanked Macro
 
     SwitchScreenOn LCDCF_ON | LCDCF_BG8000 | LCDCF_BGON   ; utils_hardware -> SwitchScreenOn Macro
 
@@ -179,9 +177,19 @@ Start:
     cp b
     jr nz, .credits
 
-    jp .loadSplash
+    jp nz, .startGame       ; If not start then loop
+
+    FetchJoypadState    ; utils_hardware -> FetchJoypadState MACRO
+    and PADF_SELECT      ; If start then set NZ flag
+
+    jp nz, .showCredits       ; If not start then loop
+
+    jp .splash
+
+; -------- Credits screen --------
 
 .startGame
+    
 ; ------- Seed the Random Number Generator (RNG) ----------
     ld a, [rDIV]        ; Load A with DIV
     ld [SEED], a        ; 
@@ -189,6 +197,14 @@ Start:
     ld [SEED + 1], a
     ld a, [rDIV]
     ld [SEED + 2], a
+
+;  -------- Set the game loop flag to 1 --------
+    ld hl, GAME_START
+    ld a, $1
+    ld [hl], a
+
+;  -------- Load the dir_table into RAM --------
+    CopyData DIR_TABLE, dir_table_data, dir_table_data_end
 
 ; -------- Clear the screen ---------
     SwitchScreenOff     ; utils_hardware -> SwitchScreenOff Macro
@@ -210,7 +226,7 @@ ENDR
 
 ;  -------- Timer start --------
     xor a           ; (ld a, 0)
-     or TACF_4KHZ    ; Set divider bit in A 
+    or TACF_4KHZ    ; Set divider bit in A 
     or TACF_START   ; Set START bit in A
     ld [rDIV], a    ; Load DIV with A (Reset to zero)
     ld [rTAC], a    ; Load TAC with A
@@ -235,9 +251,27 @@ ENDR
 
     CheckTileRotation                   ; Check for button pressed and rotate tiles accordingly
 
+    FetchJoypadState                    ; utils_hardware -> FetchJoypadState MACRO
+    and PADF_SELECT                     ; If select then set NZ flag
+
+    jp z, .loop
+
+    Check
+
     jp .loop                            ; Jump back to the top of the game loop
 
 ; -------- END Main Loop --------
+
+.startDebug
+
+; -------- Clear the screen ---------
+    SwitchScreenOff     ; utils_hardware -> SwitchScreenOff Macro
+    ClearVRAM           ; utils_clear -> ClearVRAM Macro
+
+; ------- Load game screen into VRAM----------
+    LoadImageBanked debugwindow_tile_data, debugwindow_tile_data_end, debugwindow_map_data, debugwindow_map_data_end
+
+    SwitchScreenOn LCDCF_ON | LCDCF_BG8000 | LCDCF_BGON   ; utils_hardware -> SwitchScreenOn Macro
 
 ; -------- Lock up the CPU ---------
 .debug         
