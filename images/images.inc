@@ -9,6 +9,10 @@ DEF IMAGES_INC = 1
     EXPORT credits_map_data_end
     EXPORT credits_tile_data
     EXPORT credits_tile_data_end
+    EXPORT menu_map_data
+    EXPORT menu_map_data_end
+    EXPORT menu_tile_data
+    EXPORT menu_tile_data_end
     EXPORT gamewindow_map_data
     EXPORT gamewindow_map_data_end
     EXPORT gamewindow_tile_data

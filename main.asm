@@ -120,49 +120,72 @@ Start:
     or TACF_4KHZ        ; Set divider bit in A
     ld [rTAC], a        ; Load TAC with A (settings)
 
-;  -------- Set the game loop flag to 1 --------
-    ld hl, GAME_START
-    ld a, $1
-    ld [hl], a
+; -------- Splash screen --------
+
+.loadSplash
 
 ; -------- Clear the screen ---------
     SwitchScreenOff     ; utils_hardware -> SwitchScreenOff Macro
     ClearVRAM           ; utils_clear -> ClearVRAM Macro
 
-; -------- Splash screen --------
-
-.loadSplash
-
 ; -------- Load splash screen ---------
-    LoadImage splashscreen_tile_data, splashscreen_tile_data_end, splashscreen_map_data, splashscreen_map_data_end    ; utils_load -> LoadImageBanked Macro
+    LoadImageBanked splashscreen_tile_data, splashscreen_tile_data_end, splashscreen_map_data, splashscreen_map_data_end    ; utils_load -> LoadImageBanked Macro
 
     SwitchScreenOn LCDCF_ON | LCDCF_BG8000 | LCDCF_BGON   ; utils_hardware -> SwitchScreenOn Macro
 
 .splash
-    ; Comment/uncomment this to jump straight to game or display the splash screen and tutorial
-    ; jp .startGame
 
 ; -------- Wait for start button press ------
     FetchJoypadState    ; utils_hardware -> FetchJoypadState MACRO
     and PADF_START      ; If start then set NZ flag
 
-    jp nz, .startGame       ; If not start then loop
-
-    FetchJoypadState    ; utils_hardware -> FetchJoypadState MACRO
-    and PADF_SELECT      ; If start then set NZ flag
-
-    jp nz, .showCredits       ; If not start then loop
+    jp nz, .loadMenu       ; If not start then loop
 
     jr .splash
+
+; -------- Menu screen --------
+
+.loadMenu
+
+; -------- Clear the screen ---------
+    SwitchScreenOff     ; utils_hardware -> SwitchScreenOff Macro
+    ClearVRAM           ; utils_clear -> ClearVRAM Macro
+
+;  -------- Set the game loop flag to 0 --------
+    ld hl, GAME_START
+    ld a, $0
+    ld [hl], a
+
+; -------- Load splash screen ---------
+    LoadImageBanked menu_tile_data, menu_tile_data_end, menu_map_data, menu_map_data_end    ; utils_load -> LoadImageBanked Macro
+
+    SwitchScreenOn LCDCF_ON | LCDCF_BG8000 | LCDCF_BGON   ; utils_hardware -> SwitchScreenOn Macro
+
+.menu
+
+; -------- Check for A button press ------
+    FetchJoypadState    ; utils_hardware -> FetchJoypadState MACRO
+    ld c, a             ; Store joypad state
+    and PADF_A      ; If start then set NZ flag
+
+    jp nz, .startGame       ; If A pressed start game loop
+
+; -------- Check for START button press ------
+    ld a, c
+    and PADF_START      ; If start then set NZ flag
+
+    jp nz, .loadCredits       ; If A pressed start game loop
+
+    jr .menu
 
 ; -------- Credits screen --------
 
 ; -------- Load credits screen ---------
 
-.showCredits
+.loadCredits
 
     SwitchScreenOff     ; utils_hardware -> SwitchScreenOff Macro
-    
+
     LoadImage credits_tile_data, credits_tile_data_end, credits_map_data, credits_map_data_end    ; utils_load -> LoadImageBanked Macro
 
     SwitchScreenOn LCDCF_ON | LCDCF_BG8000 | LCDCF_BGON   ; utils_hardware -> SwitchScreenOn Macro
@@ -182,7 +205,7 @@ Start:
     cp b
     jr nz, .credits
 
-    jp .loadSplash
+    jp .loadMenu
 
 .startGame
 ; ------- Seed the Random Number Generator (RNG) ----------
@@ -192,6 +215,11 @@ Start:
     ld [SEED + 1], a
     ld a, [rDIV]
     ld [SEED + 2], a
+
+;  -------- Set the game loop flag to 1 --------
+    ld hl, GAME_START
+    ld a, $1
+    ld [hl], a
 
 ; -------- Clear the screen ---------
     SwitchScreenOff     ; utils_hardware -> SwitchScreenOff Macro
