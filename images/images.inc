@@ -25,5 +25,9 @@ DEF IMAGES_INC = 1
     EXPORT debugwindow_map_data_end
     EXPORT debugwindow_tile_data
     EXPORT debugwindow_tile_data_end
+    EXPORT solvedwindow_tile_map
+    EXPORT solvedwindow_tile_map_end
+    EXPORT solvedwindow_tile_data
+    EXPORT solvedwindow_tile_data_end
 
     ENDC ; IMAGES_INC

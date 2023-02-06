@@ -43,11 +43,11 @@ SEED EQU INTR_STATE + $01
 ; Current tile DIR [1 bytes]
 CUR_DIR EQU SEED + $03
 
-; Fail flag, set if check failed [1 bytes]
-FAIL_FLAG EQU CUR_DIR + $01
+; State flag, set if check passed or failed [1 bytes]
+STATE_FLAG EQU CUR_DIR + $01
 
 ; Boolean flag to state weather the game loop has started [1 bytes]
-GAME_START EQU FAIL_FLAG + $01
+GAME_START EQU STATE_FLAG + $01
 
 ; Boolean flag to state whether player can move [1 bytes]
 CAN_MOVE EQU GAME_START + $01

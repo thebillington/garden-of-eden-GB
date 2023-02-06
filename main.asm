@@ -150,7 +150,6 @@ Start:
 
 ; -------- Clear the screen ---------
     SwitchScreenOff     ; utils_hardware -> SwitchScreenOff Macro
-    ClearVRAM           ; utils_clear -> ClearVRAM Macro
 
 ;  -------- Set the game loop flag to 0 --------
     ld hl, GAME_START
@@ -204,6 +203,13 @@ Start:
     ld a, $3F
     cp b
     jr nz, .credits
+
+;  -------- Pause the Timer --------
+    xor a               ; (ld a, 0)
+    ld [rTIMA], a       ; Set TIMA to 0
+    or TACF_STOP        ; Set STOP bit in A
+    or TACF_4KHZ        ; Set divider bit in A
+    ld [rTAC], a        ; Load TAC with A (settings)
 
     jp .loadMenu
 
@@ -275,22 +281,40 @@ ENDR
 
     jp z, .loop
 
-    Check
+    CheckSolved
+    ld hl, STATE_FLAG
+    ld a, [hl]
+    and $1
+    jr nz, .loadSolved
 
     jp .loop                            ; Jump back to the top of the game loop
 
 ; -------- END Main Loop --------
 
-.startDebug
+.loadSolved
 
-; -------- Clear the screen ---------
-    SwitchScreenOff     ; utils_hardware -> SwitchScreenOff Macro
-    ClearVRAM           ; utils_clear -> ClearVRAM Macro
+;  -------- Pause the Timer --------
+    xor a               ; (ld a, 0)
+    ld [rTIMA], a       ; Set TIMA to 0
+    or TACF_STOP        ; Set STOP bit in A
+    or TACF_4KHZ        ; Set divider bit in A
+    ld [rTAC], a        ; Load TAC with A (settings)
 
 ; ------- Load game screen into VRAM----------
-    LoadImageBanked debugwindow_tile_data, debugwindow_tile_data_end, debugwindow_map_data, debugwindow_map_data_end
+    SwitchScreenOff
+
+    LoadImageBanked solvedwindow_tile_data, solvedwindow_tile_data_end, solvedwindow_tile_map, solvedwindow_tile_map_end
 
     SwitchScreenOn LCDCF_ON | LCDCF_BG8000 | LCDCF_BGON   ; utils_hardware -> SwitchScreenOn Macro
+
+.waitSolved
+; -------- Wait for A button press ------
+    FetchJoypadState                ; utils_hardware -> FetchJoypadState MACRO
+    and PADF_A                      ; If a then set NZ flag
+
+    jp nz, .loadSplash                ; If not A then loop
+
+    jr .waitSolved                  ; If A then jup back to menu
 
 ; -------- Lock up the CPU ---------
 .debug         
