@@ -2,7 +2,7 @@ INCLUDE "hardware.inc"
 INCLUDE "memory_map.inc"
 INCLUDE "constants.inc"
 
-MACRO Check
+MACRO CheckSolved
     ld hl, CUR_DIR
     ld [hl], MAZE_IN_DIR
 
@@ -67,6 +67,9 @@ MACRO Check
     jp .checkLoop\@
 .dirDown\@
     MoveCheckCursorY 8
+    cp $CC                  ; Check for solved state
+    jp z, .passedCheck\@
+
     sub CORNER_PIECE_BOTTOM_RIGHT
     HandleCrossover $0
     ld hl, DIR_TABLE
@@ -106,10 +109,14 @@ MACRO Check
 
     jp .checkLoop\@
 .failedCheck\@
-    ld hl, FAIL_FLAG
+    SetCheckCursorXY CHECK_CURSOR_START_POS_X, CHECK_CURSOR_START_POS_Y
+    jr .end\@
+
+.passedCheck\@
+    ld hl, STATE_FLAG
     ld [hl], $1
 
-    SetCheckCursorXY CHECK_CURSOR_START_POS_X, CHECK_CURSOR_START_POS_Y
+.end\@
 ENDM
 
 MACRO HandleCrossover
