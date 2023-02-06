@@ -134,28 +134,56 @@ Start:
     SwitchScreenOn LCDCF_ON | LCDCF_BG8000 | LCDCF_BGON   ; utils_hardware -> SwitchScreenOn Macro
 
 .splash
-    ; Comment/uncomment this to jump straight to game or display the splash screen and tutorial
-    ; jp .startGame
 
 ; -------- Wait for start or select button press ------
     FetchJoypadState                ; utils_hardware -> FetchJoypadState MACRO
     ld b, a                         ; Backup A register
     and PADF_START                  ; If start then set NZ flag
 
-    jp nz, .startGame               ; If not start then loop
-
-    ld a, b                         ; Restore A from backup
-    and PADF_SELECT                 ; If select then set NZ flag
-
-    jr nz, .showCredits             ; If not start then loop
+    jp nz, .loadMenu       ; If not start then loop
 
     jr .splash
+
+; -------- Menu screen --------
+
+.loadMenu
+
+; -------- Clear the screen ---------
+    SwitchScreenOff     ; utils_hardware -> SwitchScreenOff Macro
+    ClearVRAM           ; utils_clear -> ClearVRAM Macro
+
+;  -------- Set the game loop flag to 0 --------
+    ld hl, GAME_START
+    ld a, $0
+    ld [hl], a
+
+; -------- Load splash screen ---------
+    LoadImageBanked menu_tile_data, menu_tile_data_end, menu_map_data, menu_map_data_end    ; utils_load -> LoadImageBanked Macro
+
+    SwitchScreenOn LCDCF_ON | LCDCF_BG8000 | LCDCF_BGON   ; utils_hardware -> SwitchScreenOn Macro
+
+.menu
+
+; -------- Check for A button press ------
+    FetchJoypadState    ; utils_hardware -> FetchJoypadState MACRO
+    ld c, a             ; Store joypad state
+    and PADF_A      ; If start then set NZ flag
+
+    jp nz, .startGame       ; If A pressed start game loop
+
+; -------- Check for START button press ------
+    ld a, c
+    and PADF_START      ; If start then set NZ flag
+
+    jp nz, .loadCredits       ; If A pressed start game loop
+
+    jr .menu
 
 ; -------- Credits screen --------
 
 ; -------- Load credits screen ---------
 
-.showCredits
+.loadCredits
     SwitchScreenOff     ; utils_hardware -> SwitchScreenOff Macro
 
     LoadImageBanked credits_tile_data, credits_tile_data_end, credits_map_data, credits_map_data_end    ; utils_load -> LoadImageBanked Macro
@@ -177,16 +205,7 @@ Start:
     cp b
     jr nz, .credits
 
-    jp nz, .startGame       ; If not start then loop
-
-    FetchJoypadState    ; utils_hardware -> FetchJoypadState MACRO
-    and PADF_SELECT      ; If start then set NZ flag
-
-    jp nz, .showCredits       ; If not start then loop
-
-    jp .splash
-
-; -------- Credits screen --------
+    jp .loadMenu
 
 .startGame
     
