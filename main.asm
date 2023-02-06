@@ -121,17 +121,12 @@ Start:
     or TACF_4KHZ        ; Set divider bit in A
     ld [rTAC], a        ; Load TAC with A (settings)
 
-;  -------- Set the game loop flag to 1 --------
-    ld hl, GAME_START
-    ld a, $1
-    ld [hl], a
-
-; -------- Clear the screen ---------
-    SwitchScreenOff     ; utils_hardware -> SwitchScreenOff Macro
-
 ; -------- Splash screen --------
 
 .loadSplash
+
+; -------- Clear the screen ---------
+    SwitchScreenOff     ; utils_hardware -> SwitchScreenOff Macro
 
 ; -------- Load splash screen ---------
     LoadImageBanked splashscreen_tile_data, splashscreen_tile_data_end, splashscreen_map_data, splashscreen_map_data_end    ; utils_load -> LoadImageBanked Macro
@@ -185,6 +180,7 @@ Start:
     jp .loadSplash
 
 .startGame
+    
 ; ------- Seed the Random Number Generator (RNG) ----------
     ld a, [rDIV]        ; Load A with DIV
     ld [SEED], a        ; 
@@ -192,6 +188,11 @@ Start:
     ld [SEED + 1], a
     ld a, [rDIV]
     ld [SEED + 2], a
+
+;  -------- Set the game loop flag to 1 --------
+    ld hl, GAME_START
+    ld a, $1
+    ld [hl], a
 
 ; -------- Clear the screen ---------
     SwitchScreenOff     ; utils_hardware -> SwitchScreenOff Macro
