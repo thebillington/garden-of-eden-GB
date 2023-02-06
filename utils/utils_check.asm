@@ -3,6 +3,8 @@ INCLUDE "memory_map.inc"
 INCLUDE "constants.inc"
 
 MACRO Check
+    WaitVBlankIF                        ; Wait for VBlank interrupt (this should get us running at ~60Hz)
+
     ld hl, CUR_DIR
     ld [hl], MAZE_IN_DIR
 
@@ -108,12 +110,4 @@ MACRO Check
 .failedCheck\@
     ld hl, FAIL_FLAG
     ld [hl], $1
-ENDM
-
-MACRO GetNextDIR
-; \1 will be the direction of the next tile
-; need someway to locate current tile
-; OUTPUT: Load A with DIR of next block
-;         Set location of next block in ram
-
 ENDM
