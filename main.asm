@@ -160,6 +160,9 @@ Start:
 ; -------- Load credits screen ---------
 
 .showCredits
+
+    SwitchScreenOff     ; utils_hardware -> SwitchScreenOff Macro
+    
     LoadImage credits_tile_data, credits_tile_data_end, credits_map_data, credits_map_data_end    ; utils_load -> LoadImageBanked Macro
 
     SwitchScreenOn LCDCF_ON | LCDCF_BG8000 | LCDCF_BGON   ; utils_hardware -> SwitchScreenOn Macro
