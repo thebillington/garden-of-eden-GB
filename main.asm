@@ -150,7 +150,6 @@ Start:
 
 ; -------- Clear the screen ---------
     SwitchScreenOff     ; utils_hardware -> SwitchScreenOff Macro
-    ClearVRAM           ; utils_clear -> ClearVRAM Macro
 
 ;  -------- Set the game loop flag to 0 --------
     ld hl, GAME_START
@@ -204,6 +203,13 @@ Start:
     ld a, $3F
     cp b
     jr nz, .credits
+
+;  -------- Pause the Timer --------
+    xor a               ; (ld a, 0)
+    ld [rTIMA], a       ; Set TIMA to 0
+    or TACF_STOP        ; Set STOP bit in A
+    or TACF_4KHZ        ; Set divider bit in A
+    ld [rTAC], a        ; Load TAC with A (settings)
 
     jp .loadMenu
 
@@ -286,6 +292,14 @@ ENDR
 ; -------- END Main Loop --------
 
 .loadSolved
+
+;  -------- Pause the Timer --------
+    xor a               ; (ld a, 0)
+    ld [rTIMA], a       ; Set TIMA to 0
+    or TACF_STOP        ; Set STOP bit in A
+    or TACF_4KHZ        ; Set divider bit in A
+    ld [rTAC], a        ; Load TAC with A (settings)
+
 ; ------- Load game screen into VRAM----------
     SwitchScreenOff
 
@@ -298,7 +312,7 @@ ENDR
     FetchJoypadState                ; utils_hardware -> FetchJoypadState MACRO
     and PADF_A                      ; If a then set NZ flag
 
-    jp nz, .loadMenu                ; If not A then loop
+    jp nz, .loadSplash                ; If not A then loop
 
     jr .waitSolved                  ; If A then jup back to menu
 
