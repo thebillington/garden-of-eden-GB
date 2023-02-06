@@ -26,7 +26,7 @@ CURSOR_START_POS_Y EQU $30                  ; Starting cursor y location
 CURSOR_START_POS_X EQU $28                  ; Starting cursor x location
 
 CHECK_CURSOR_START_POS_Y EQU $28                  ; Starting cursor y location
-CHECK_CURSOR_START_POS_X EQU $48                  ; Starting cursor x location
+CHECK_CURSOR_START_POS_X EQU $28                  ; Starting cursor x location
 
 CURSOR_MAX_POS_Y EQU $30                    ; Max x and y bounds for cursor
 CURSOR_MIN_POS_Y EQU $78
