@@ -41,9 +41,9 @@ ENDM
 MACRO SetCheckCursorY
 
     ld d, CHECK_CURSOR                    ; Load cursor sprite position into d
-    ld a, \1                        ; Load new position into a
 
     Spr_getY d                      ; Get the sprite y position pointer
+    ld a, \1                        ; Load new position into a
     ld [hl], a                      ; Put the new position into the sprite y location
 
     SetCheckCursorPosition
@@ -54,9 +54,9 @@ ENDM
 MACRO SetCheckCursorX
 
     ld d, CHECK_CURSOR                    ; Load cursor sprite position into d
-    ld a, \1                        ; Load new position into a
 
     Spr_getX d                      ; Get the sprite x position pointer
+    ld a, \1                        ; Load new position into a
     ld [hl], a                      ; Put the new position into the sprite x location
 
     SetCheckCursorPosition
