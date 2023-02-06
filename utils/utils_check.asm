@@ -3,14 +3,16 @@ INCLUDE "memory_map.inc"
 INCLUDE "constants.inc"
 
 MACRO Check
-    WaitVBlankIF                        ; Wait for VBlank interrupt (this should get us running at ~60Hz)
-
     ld hl, CUR_DIR
     ld [hl], MAZE_IN_DIR
 
     ld a, [hl]
 
 .checkLoop\@
+    push af
+    WaitVBlankIF                        ; Wait for VBlank interrupt (this should get us running at ~60Hz)
+    pop af
+
     cp DIR_UP
     jp z, .dirUp\@
 
@@ -110,4 +112,6 @@ MACRO Check
 .failedCheck\@
     ld hl, FAIL_FLAG
     ld [hl], $1
+
+    SetCheckCursorXY CHECK_CURSOR_START_POS_X, CHECK_CURSOR_START_POS_Y
 ENDM

@@ -23,6 +23,22 @@ MACRO LoadCheckCursor
 
 ENDM
 
+MACRO SetCheckCursorXY
+    ld d, CHECK_CURSOR              ; Load cursor sprite position into d
+
+    ld a, \1                        ; Load new position into a
+    Spr_getX d                      ; Get the sprite x position pointer
+    ld [hl], a                      ; Put the new position into the sprite x location
+
+    ld a, \2                        ; Load movement direction into e
+    Spr_getY d                      ; Get the sprite y position pointer
+    ld [hl], a                      ; Store the result
+
+    SetCheckCursorPosition
+    GetCheckCursorTile              ; Put the tile data for the new position in a register
+
+ENDM
+
 MACRO SetCheckCursorY
 
     ld d, CHECK_CURSOR                    ; Load cursor sprite position into d
