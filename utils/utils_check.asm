@@ -27,10 +27,9 @@ MACRO Check
 
 .dirUp\@
     MoveCheckCursorY -8
-    ; A has tile number
     sub CORNER_PIECE_BOTTOM_RIGHT
-    ; A has offset of pipe
-    ld hl, dir_table
+    HandleCrossover $0
+    ld hl, DIR_TABLE
     ld bc, $0
     ld c, a
     add hl, bc
@@ -48,10 +47,9 @@ MACRO Check
     jp .checkLoop\@
 .dirRight\@
     MoveCheckCursorX 8
-    ; A has tile number
     sub CORNER_PIECE_BOTTOM_RIGHT
-    ; A has offset of pipe
-    ld hl, dir_table
+    HandleCrossover $1
+    ld hl, DIR_TABLE
     ld bc, $0
     ld c, a
     add hl, bc
@@ -69,10 +67,9 @@ MACRO Check
     jp .checkLoop\@
 .dirDown\@
     MoveCheckCursorY 8
-    ; A has tile number
     sub CORNER_PIECE_BOTTOM_RIGHT
-    ; A has offset of pipe
-    ld hl, dir_table
+    HandleCrossover $0
+    ld hl, DIR_TABLE
     ld bc, $0
     ld c, a
     add hl, bc
@@ -90,10 +87,9 @@ MACRO Check
     jp .checkLoop\@
 .dirLeft\@
     MoveCheckCursorX -8
-    ; A has tile number
     sub CORNER_PIECE_BOTTOM_RIGHT
-    ; A has offset of pipe
-    ld hl, dir_table
+    HandleCrossover $1
+    ld hl, DIR_TABLE
     ld bc, $0
     ld c, a
     add hl, bc
@@ -114,4 +110,36 @@ MACRO Check
     ld [hl], $1
 
     SetCheckCursorXY CHECK_CURSOR_START_POS_X, CHECK_CURSOR_START_POS_Y
+ENDM
+
+MACRO HandleCrossover
+    cp $6               ; If pipe is not corssover, set NZ flag
+    jr nz, .skip\@      ; Skip macro if pipe is not crossover
+
+    ld b, a             ; Backup A register
+    ld a, \1            ; load A with dir input
+    and $1              ; Check weather param is 0: Vertical, 1: Horizontal
+
+    jr nz, .handleHorizontal\@
+
+.handleVertical\@
+    ld a, $5
+    ld hl, DIR_TABLE
+    ld c, b
+    ld b, $0
+    add hl, bc
+    ld [hl], a
+    ld a, c                 ; Backup CUR_DIR in B
+    jr .skip\@
+
+.handleHorizontal\@
+    ld a, $A
+    ld hl, DIR_TABLE
+    ld c, b
+    ld b, $0
+    add hl, bc
+    ld [hl], a
+    ld a, c                 ; Backup CUR_DIR in B
+
+.skip\@
 ENDM

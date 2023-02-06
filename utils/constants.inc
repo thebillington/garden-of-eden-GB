@@ -17,8 +17,8 @@ DEF DIR_RIGHT EQU $2
 DEF DIR_DOWN EQU $4
 DEF DIR_LEFT EQU $8
 
-EXPORT dir_table
-EXPORT dir_table_end
+EXPORT dir_table_data
+EXPORT dir_table_data_end
 
 DEF MAZE_IN_DIR EQU DIR_DOWN
 

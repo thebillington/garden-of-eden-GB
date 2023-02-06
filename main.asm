@@ -194,6 +194,9 @@ Start:
     ld a, $1
     ld [hl], a
 
+;  -------- Load the dir_table into RAM --------
+    CopyData DIR_TABLE, dir_table_data, dir_table_data_end
+
 ; -------- Clear the screen ---------
     SwitchScreenOff     ; utils_hardware -> SwitchScreenOff Macro
     ClearVRAM           ; utils_clear -> ClearVRAM Macro
