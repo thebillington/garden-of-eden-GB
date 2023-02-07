@@ -22,3 +22,5 @@ INCLUDE "utils_check_cursor.asm"
 INCLUDE "utils_controller.asm"
 
 INCLUDE "utils_tile_rotation.asm"
+
+INCLUDE "utils_menu_cursor.asm"
