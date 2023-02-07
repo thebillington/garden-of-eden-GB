@@ -151,15 +151,25 @@ Start:
 ; -------- Clear the screen ---------
     SwitchScreenOff     ; utils_hardware -> SwitchScreenOff Macro
 
-;  -------- Set the game loop flag to 0 --------
-    ld hl, GAME_START
-    ld a, $0
-    ld [hl], a
-
-; -------- Load splash screen ---------
+; -------- Load menu screen ---------
     LoadImageBanked menu_tile_data, menu_tile_data_end, menu_map_data, menu_map_data_end    ; utils_load -> LoadImageBanked Macro
 
-    SwitchScreenOn LCDCF_ON | LCDCF_BG8000 | LCDCF_BGON   ; utils_hardware -> SwitchScreenOn Macro
+    SwitchScreenOn LCDCF_ON | LCDCF_BG8000 | LCDCF_BGON | LCDCF_OBJON | LCDCF_OBJ8   ; utils_hardware -> SwitchScreenOn Macro
+
+; -------- Load menu cursor ---------
+    LoadMenuCursor
+
+;  -------- Set the game loop flag to 1 --------
+    ld hl, GAME_START
+    ld a, $1
+    ld [hl], a
+
+;  -------- Timer start --------
+    xor a           ; (ld a, 0)
+    or TACF_4KHZ    ; Set divider bit in A 
+    or TACF_START   ; Set START bit in A
+    ld [rDIV], a    ; Load DIV with A (Reset to zero)
+    ld [rTAC], a    ; Load TAC with A
 
 .menu
 
@@ -168,21 +178,35 @@ Start:
     ld c, a             ; Store joypad state
     and PADF_A      ; If start then set NZ flag
 
-    jp nz, .startGame       ; If A pressed start game loop
+    jp nz, .menuSelection       ; If A pressed start game loop
 
-; -------- Check for START button press ------
-    ld a, c
-    and PADF_START      ; If start then set NZ flag
+    CursorMovement          ; Check for cursor movement
 
-    jp nz, .loadCredits       ; If A pressed start game loop
+    jp .menu
 
-    jr .menu
+; -------- Handle A press on menu screen ------
+.menuSelection
+
+    LoadMenuCursorY                 ; Load y position of the menu cursor into a
+
+    cp MENU_PLAY_GAME_POSITION
+    jr z, .startGame                ; If the play game position is selected, start the game
+
+    cp MENU_CREDITS_POSITION
+    jr z, .loadCredits                ; If the instructions position is selected, start the game
+
+    jp .menu
 
 ; -------- Credits screen --------
 
-; -------- Load credits screen ---------
-
 .loadCredits
+
+;  -------- Set the game loop flag to 0 --------
+    ld hl, GAME_START
+    ld a, $0
+    ld [hl], a
+
+; -------- Load credits screen ---------
     SwitchScreenOff     ; utils_hardware -> SwitchScreenOff Macro
 
     LoadImageBanked credits_tile_data, credits_tile_data_end, credits_map_data, credits_map_data_end    ; utils_load -> LoadImageBanked Macro

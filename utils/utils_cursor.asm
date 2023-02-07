@@ -4,6 +4,8 @@ INCLUDE "constants.inc"
 
 MACRO LoadCursor
 
+    UnloadMenuCursor                    ; Unload the menu cursor
+
     ld d, CURSOR
 
     Spr_getY d
@@ -23,6 +25,20 @@ MACRO LoadCursor
 
     ld hl, CAN_MOVE
     ld [hl], 1                      ; Set can move boolean to true
+
+ENDM
+
+MACRO UnloadCursor
+
+    ld d, CURSOR
+
+    Spr_getY d
+    ld a, 0
+	ld [hl], a
+    
+    Spr_getX d
+    ld a, 0
+	ld [hl], a        
 
 ENDM
 

@@ -23,6 +23,20 @@ MACRO LoadCheckCursor
 
 ENDM
 
+MACRO UnloadCheckCursor
+
+    ld d, CHECK_CURSOR
+
+    Spr_getY d
+    ld a, 0
+	ld [hl], a
+    
+    Spr_getX d
+    ld a, 0
+	ld [hl], a        
+
+ENDM
+
 MACRO SetCheckCursorXY
     ld d, CHECK_CURSOR              ; Load cursor sprite position into d
 
