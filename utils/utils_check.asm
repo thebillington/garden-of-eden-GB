@@ -150,3 +150,25 @@ MACRO HandleCrossover
 
 .skip\@
 ENDM
+
+MACRO LoadSolvedMessage
+
+    ld hl, $9A07
+    ld [hl], SOLVED_S           ; Load S of solved message into bg map
+
+    inc hl
+    ld [hl], SOLVED_O           ; Load O of solved message into bg map
+
+    inc hl
+    ld [hl], SOLVED_L           ; Load L of solved message into bg map
+
+    inc hl
+    ld [hl], SOLVED_V           ; Load V of solved message into bg map
+
+    inc hl
+    ld [hl], SOLVED_E           ; Load E of solved message into bg map
+
+    inc hl
+    ld [hl], SOLVED_D           ; Load D of solved message into bg map
+
+ENDM

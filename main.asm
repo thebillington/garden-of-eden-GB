@@ -152,7 +152,7 @@ Start:
     SwitchScreenOff     ; utils_hardware -> SwitchScreenOff Macro
 
 ; -------- Load menu screen ---------
-    LoadImageBanked menu_tile_data, menu_tile_data_end, menu_map_data, menu_map_data_end    ; utils_load -> LoadImageBanked Macro
+    LoadImageBanked gamewindow_tile_data, gamewindow_tile_data_end, menu_map_data, menu_map_data_end    ; utils_load -> LoadImageBanked Macro
 
     SwitchScreenOn LCDCF_ON | LCDCF_BG8000 | LCDCF_BGON | LCDCF_OBJON | LCDCF_OBJ8   ; utils_hardware -> SwitchScreenOn Macro
 
@@ -209,7 +209,7 @@ Start:
 ; -------- Load credits screen ---------
     SwitchScreenOff     ; utils_hardware -> SwitchScreenOff Macro
 
-    LoadImageBanked credits_tile_data, credits_tile_data_end, credits_map_data, credits_map_data_end    ; utils_load -> LoadImageBanked Macro
+    LoadImageBanked gamewindow_tile_data, gamewindow_tile_data_end, credits_map_data, credits_map_data_end    ; utils_load -> LoadImageBanked Macro
 
     SwitchScreenOn LCDCF_ON | LCDCF_BG8000 | LCDCF_BGON   ; utils_hardware -> SwitchScreenOn Macro
 
@@ -326,8 +326,8 @@ ENDR
 
 ; ------- Load game screen into VRAM----------
     SwitchScreenOff
-
-    LoadImageBanked solvedwindow_tile_data, solvedwindow_tile_data_end, solvedwindow_tile_map, solvedwindow_tile_map_end
+    
+    LoadSolvedMessage
 
     SwitchScreenOn LCDCF_ON | LCDCF_BG8000 | LCDCF_BGON   ; utils_hardware -> SwitchScreenOn Macro
 
