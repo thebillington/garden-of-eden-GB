@@ -18,7 +18,7 @@ MACRO LoadMenuCursor
 	ld [hl], a        
 
     Spr_getTile d
-    ld a, $DE
+    ld a, $EF
     ld [hl], a
 
     Spr_getAttr d

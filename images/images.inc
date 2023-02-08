@@ -7,12 +7,8 @@ DEF IMAGES_INC = 1
     EXPORT splashscreen_tile_data_end
     EXPORT credits_map_data
     EXPORT credits_map_data_end
-    EXPORT credits_tile_data
-    EXPORT credits_tile_data_end
     EXPORT menu_map_data
     EXPORT menu_map_data_end
-    EXPORT menu_tile_data
-    EXPORT menu_tile_data_end
     EXPORT gamewindow_map_data
     EXPORT gamewindow_map_data_end
     EXPORT gamewindow_tile_data
@@ -21,13 +17,5 @@ DEF IMAGES_INC = 1
     EXPORT studiologo_map_data_end
     EXPORT studiologo_tile_data
     EXPORT studiologo_tile_data_end
-    EXPORT debugwindow_map_data
-    EXPORT debugwindow_map_data_end
-    EXPORT debugwindow_tile_data
-    EXPORT debugwindow_tile_data_end
-    EXPORT solvedwindow_tile_map
-    EXPORT solvedwindow_tile_map_end
-    EXPORT solvedwindow_tile_data
-    EXPORT solvedwindow_tile_data_end
 
     ENDC ; IMAGES_INC
