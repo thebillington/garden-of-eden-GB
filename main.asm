@@ -130,6 +130,7 @@ Start:
 .loadSplash
 
 ; -------- Initialise Music Player and load a Song ----------
+; -------- https://github.com/gbdev/GBSoundSystem -----------
 
     call SoundSystem_Init
 
