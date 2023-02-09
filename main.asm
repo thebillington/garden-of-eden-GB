@@ -136,7 +136,15 @@ Start:
 
     SwitchScreenOn LCDCF_ON | LCDCF_BG8000 | LCDCF_BGON   ; utils_hardware -> SwitchScreenOn Macro
 
+; -------- Load DevSound and start music track 1 --------
+    ld a, 0
+    call  DS_Init
+
 .splash
+
+; ------- Play music track ---------------
+
+    call DS_Play
 
 ; -------- Wait for start or select button press ------
     FetchJoypadState                ; utils_hardware -> FetchJoypadState MACRO
@@ -146,12 +154,6 @@ Start:
     jp nz, .loadMenu       ; If not start then loop
 
     jr .splash
-
-; -------- Load DevSound and start music
-
-    call DS_Play
-    ld a, 0
-    call  DS_Init
 
 ; -------- Menu screen --------
 
