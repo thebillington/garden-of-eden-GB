@@ -7,8 +7,9 @@ INClUDE "util.asm"
 INCLUDE "dir_table.asm"
 INCLUDE "constants.inc"
 
-; ------- DEVSOUND LITE ------------
-INCLUDE "DevSound.asm"
+; -------- GB Sound System ----------
+INCLUDE	"sound-system/SoundSystem.asm"
+INCLUDE "music/bob.asm"
 
 ; -------- INTERRUPT VECTORS --------
 ; specific memory addresses are called when a hardware interrupt triggers
@@ -128,6 +129,18 @@ Start:
 
 .loadSplash
 
+; -------- Initialise Music Player and load a Song ----------
+
+    call SoundSystem_Init
+
+    ld   bc,BANK(Inst_bob)
+    ld   de,Inst_bob
+    call Music_PrepareInst
+
+    ld   bc,BANK(Music_bob)
+    ld   de,Music_bob
+    call Music_Play
+
 ; -------- Clear the screen ---------
     SwitchScreenOff     ; utils_hardware -> SwitchScreenOff Macro
 
@@ -136,15 +149,11 @@ Start:
 
     SwitchScreenOn LCDCF_ON | LCDCF_BG8000 | LCDCF_BGON   ; utils_hardware -> SwitchScreenOn Macro
 
-; -------- Load DevSound and start music track 1 --------
-    ld a, 0
-    call  DS_Init
-
-; ------- Play music track ---------------
-
-    call DS_Play
-
 .splash
+
+; ---------- Process Music Updates ----------
+
+    call SoundSystem_Process
 
 ; -------- Wait for start or select button press ------
 
