@@ -140,13 +140,14 @@ Start:
     ld a, 0
     call  DS_Init
 
-.splash
-
 ; ------- Play music track ---------------
 
     call DS_Play
 
+.splash
+
 ; -------- Wait for start or select button press ------
+
     FetchJoypadState                ; utils_hardware -> FetchJoypadState MACRO
     ld b, a                         ; Backup A register
     and PADF_START                  ; If start then set NZ flag
