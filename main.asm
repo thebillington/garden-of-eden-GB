@@ -7,9 +7,9 @@ INClUDE "util.asm"
 INCLUDE "dir_table.asm"
 INCLUDE "constants.inc"
 
-; -------- GB Sound System ----------
-INCLUDE	"sound-system/SoundSystem.asm"
-INCLUDE "music/bob.asm"
+; -------- INCLUDE fortISSimO --------
+INClUDE "fortISSimO/fortISSimO.asm"
+INClUDE "wyrmhole.asm"
 
 ; -------- INTERRUPT VECTORS --------
 ; specific memory addresses are called when a hardware interrupt triggers
@@ -129,18 +129,24 @@ Start:
 
 .loadSplash
 
-; -------- Initialise Music Player and load a Song ----------
-; -------- https://github.com/gbdev/GBSoundSystem -----------
+; -------- fortISSimO Music Player setup ---------
+    SwitchScreenOff     ; utils_hardware -> SwitchScreenOff Macro
 
-    call SoundSystem_Init
+	xor a
+	ldh [hUGE_MutedChannels], a
+	ld a, hUGE_NO_WAVE
+	ld [hUGE_LoadedWaveID], a
 
-    ld   bc,BANK(Inst_bob)
-    ld   de,Inst_bob
-    call Music_PrepareInst
+	; Turn on the APU, and set the panning & volume to reasonable defaults.
+	ld a, AUDENA_ON
+	ldh [rNR52], a
+	ld a, $FF
+	ldh [rNR51], a
+	ld a, $77
+	ldh [rNR50], a
 
-    ld   bc,BANK(Music_bob)
-    ld   de,Music_bob
-    call Music_Play
+	ld de, wyrmhole ;
+	call hUGE_StartSong
 
 ; -------- Clear the screen ---------
     SwitchScreenOff     ; utils_hardware -> SwitchScreenOff Macro
@@ -152,11 +158,9 @@ Start:
 
 .splash
 
-; ---------- Process Music Updates ----------
-
-    call SoundSystem_Process
-
 ; -------- Wait for start or select button press ------
+
+	call hUGE_TickSound
 
     FetchJoypadState                ; utils_hardware -> FetchJoypadState MACRO
     ld b, a                         ; Backup A register
