@@ -7,6 +7,9 @@ INClUDE "util.asm"
 INCLUDE "dir_table.asm"
 INCLUDE "constants.inc"
 
+; ------- DEVSOUND LITE ------------
+INCLUDE "DevSound.asm"
+
 ; -------- INTERRUPT VECTORS --------
 ; specific memory addresses are called when a hardware interrupt triggers
 
@@ -143,6 +146,12 @@ Start:
     jp nz, .loadMenu       ; If not start then loop
 
     jr .splash
+
+; -------- Load DevSound and start music
+
+    call DS_Play
+    ld a, 0
+    call  DS_Init
 
 ; -------- Menu screen --------
 
