@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="icon" type="image/png" href="favicon.png">
+  <title>Garden of Eden GB</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #0f380f;
+      color: #9bbc0f;
+      font-family: monospace;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+    .shell {
+      background: #306230;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 8px 0 #0f380f, 0 12px 24px rgba(0,0,0,0.5);
+    }
+    .screen-wrap {
+      background: #0f380f;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 20px;
+    }
+    canvas {
+      display: block;
+      margin: 0 auto;
+      image-rendering: pixelated;
+      width: 320px;
+      height: 288px;
+      background: #0f380f;
+    }
+    #controller {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    #controller_dpad {
+      position: relative;
+      width: 120px;
+      height: 120px;
+      background: #0f380f;
+      border-radius: 50%;
+      touch-action: none;
+    }
+    #controller_dpad::before {
+      content: "";
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 40px; height: 40px;
+      background: #0f380f;
+      border-radius: 4px;
+    }
+    #controller_dpad::after {
+      content: "";
+      position: absolute;
+      top: 10px; left: 50%;
+      transform: translateX(-50%);
+      width: 40px; height: 20px;
+      background: #306230;
+      border-radius: 4px;
+      box-shadow: 0 80px 0 #306230, 10px 50px 0 #306230, -10px 50px 0 #306230;
+    }
+    .btn-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+    .row-btns { display: flex; gap: 16px; }
+    .roundBtn {
+      width: 52px; height: 52px;
+      border-radius: 50%;
+      background: #0f380f;
+      color: #9bbc0f;
+      border: 3px solid #9bbc0f;
+      font-family: monospace;
+      font-size: 1rem;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      touch-action: none;
+      cursor: pointer;
+    }
+    .roundBtn:active, .roundBtn.btnPressed { background: #9bbc0f; color: #0f380f; }
+    .capsuleBtn {
+      padding: 6px 16px;
+      border-radius: 20px;
+      background: #0f380f;
+      color: #9bbc0f;
+      border: 2px solid #9bbc0f;
+      font-family: monospace;
+      font-size: 0.7rem;
+      touch-action: none;
+      cursor: pointer;
+    }
+    .capsuleBtn:active, .capsuleBtn.btnPressed { background: #9bbc0f; color: #0f380f; }
+    .select-start { display: flex; gap: 8px; margin-top: 4px; }
+    .key-hint {
+      margin-top: 12px;
+      font-size: 0.65rem;
+      color: #306230;
+      text-align: center;
+    }
+    .game-instructions {
+      margin-top: 8px;
+      padding: 8px 12px;
+      background: #0f380f;
+      border-radius: 8px;
+      font-size: 0.65rem;
+      line-height: 1.5;
+      color: #9bbc0f;
+    }
+    .status {
+      margin-bottom: 12px;
+      font-size: 0.75rem;
+      text-align: center;
+    }
+    .game-instructions {
+      margin-top: 12px;
+      padding: 8px 12px;
+      background: #0f380f;
+      border-radius: 8px;
+      font-size: 0.65rem;
+      line-height: 1.5;
+      color: #9bbc0f;
+    }
+    @media (max-width: 420px) {
+      .shell { padding: 12px; border-radius: 8px; }
+      canvas { width: 240px; height: 216px; }
+      #controller_dpad { width: 100px; height: 100px; }
+      .roundBtn { width: 44px; height: 44px; font-size: 0.85rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="shell">
+  <div class="screen-wrap">
+    <canvas id="mainCanvas" width="160" height="144">Canvas not supported</canvas>
+  </div>
+  <div class="status" id="status">Loading ROM...</div>
+  <div id="controller" style="display:none">
+    <div id="controller_dpad"></div>
+    <div class="btn-group">
+      <div class="row-btns">
+        <div id="controller_b" class="roundBtn">B</div>
+        <div id="controller_a" class="roundBtn">A</div>
+      </div>
+      <div class="select-start">
+        <div id="controller_select" class="capsuleBtn">Select</div>
+        <div id="controller_start" class="capsuleBtn">Start</div>
+      </div>
+    </div>
+  </div>
+  <div class="game-instructions">
+    <strong>Controls:</strong> D-Pad = Arrow/WASD &middot; A = Z &middot; B = X &middot; Start = Enter &middot; Select = Shift
+  </div>
+
+</div>
+
+<script src="gameboy.js"></script>
+<script src="io.js"></script>
+<script src="controls.js"></script>
+<script>
+var canvas = document.getElementById("mainCanvas");
+var statusEl = document.getElementById("status");
+
+function loadROM() {
+  statusEl.textContent = "Loading ROM...";
+  fetch("rom/main.gb")
+    .then(function(r) {
+      if (!r.ok) throw new Error("ROM not found. Build with `make play`.");
+      return r.arrayBuffer();
+    })
+    .then(function(data) {
+      var rom = new Uint8Array(data);
+      start(canvas, rom);
+      statusEl.textContent = "Garden of Eden";
+    })
+    .catch(function(e) {
+      statusEl.textContent = e.message;
+    });
+}
+
+loadROM();
+</script>
+</body>
+</html>
