@@ -35,6 +35,7 @@ $(OBJS): $(SRC)
 
 .PHONY: play
 play: $(NAME)
+	mkdir -p play/rom
 	cp $<.gb play/rom/
 	@printf "Copied $<.gb to play/rom/\n"
 
