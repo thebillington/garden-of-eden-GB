@@ -1,0 +1,39 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install RGBDS
+        run: |
+          wget -q https://github.com/gbdev/rgbds/releases/latest/download/rgbds.tar.gz
+          tar -xzf rgbds.tar.gz
+          sudo install -m 755 rgbasm rgblink rgbfix rgbgfx /usr/local/bin/
+
+      - name: Build ROM
+        run: make
+
+      - name: Copy ROM to play directory
+        run: mkdir -p play/rom && cp main.gb play/rom/
+
+      - name: Upload ROM artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: garden-of-eden-gb
+          path: main.gb
+
+      - name: Deploy to GitHub Pages
+        if: github.ref == 'refs/heads/main'
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./play
+          destination_dir: ./
